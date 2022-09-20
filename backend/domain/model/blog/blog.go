@@ -9,7 +9,7 @@ type Blog struct {
 	view     BlogView
 }
 
-/* create new blog */
+/* constructor */
 func NewBlog(command *commandNewBlog) (*Blog, error) {
 	return &Blog{
 		userId:   command.userId,
