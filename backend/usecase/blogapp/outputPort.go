@@ -1,4 +1,4 @@
-package usecase
+package blogapp
 
 type BlogOutputPort interface {
 	RespondBlog(BlogResponse)

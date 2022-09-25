@@ -1,4 +1,4 @@
-package usecase
+package blogapp
 
 type BlogInputPort interface {
 	FindById(BlogFindByIdRequest)

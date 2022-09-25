@@ -1,4 +1,4 @@
-package usecase
+package blogapp
 
 import (
 	"cook-blog/domain/model"
