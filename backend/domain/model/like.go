@@ -3,7 +3,6 @@ package model
 import "time"
 
 type Like struct {
-	Id        LikeId
 	BlogId    BlogId
 	UserId    UserId
 	CreatedAt time.Time

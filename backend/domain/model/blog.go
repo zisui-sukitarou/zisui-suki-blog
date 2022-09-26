@@ -5,7 +5,7 @@ import (
 )
 
 type Blog struct {
-	Id        BlogId
+	BlogId    BlogId
 	UserId    UserId
 	Content   BlogContent
 	Title     BlogTitle

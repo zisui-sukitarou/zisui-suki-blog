@@ -3,18 +3,17 @@ package model
 import "time"
 
 type Tag struct {
-	Id        TagId
-	Name      TagName
+	TagName      TagName
 	CreatedAt time.Time
 }
 
 /* constructor */
 type CommandNewTag struct {
-	Name TagName
+	TagName TagName
 }
 
 func NewTag(command CommandNewTag) (*Tag, error) {
 	return &Tag{
-		Name: command.Name,
+		TagName: command.TagName,
 	}, nil
 }
