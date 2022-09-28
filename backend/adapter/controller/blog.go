@@ -2,9 +2,9 @@ package controller
 
 import "github.com/gin-gonic/gin"
 
-type Blog struct {
+type BlogController struct {
 }
 
-func (b *Blog) GetBlogById(c *gin.Context) {
+func (b *BlogController) GetBlogById(c *gin.Context) {
 
 }

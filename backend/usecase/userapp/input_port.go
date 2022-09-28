@@ -5,8 +5,7 @@ type UserInputPort interface {
 	Logout(UserLogoutRequest)
 	SignUp(UserSignUpRequest)
 	FindById(UserFindByIdRequest)
-	UpdateName(UserUpdateNameRequest)
-	UpdateEmail(UserUpdateEmailRequest)
+	Update(UserUpdateRequest)
 	UpdatePassword(UserUpdatePasswordRequest)
 	Delete(UserDeleteRequest)
 }

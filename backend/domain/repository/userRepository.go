@@ -2,11 +2,12 @@ package repository
 
 import "cook-blog/domain/model"
 
+/* user repository */
+// * PK で Find するメソッドは、返り値の1つ目が存在フラグ
 type UserRepository interface {
-	FindById(model.UserId) *model.User
-	FindByUserName(model.UserName) *model.User
-	FindByEmail(model.UserEmail) *model.User
-	Register(*model.User)
-	Update(*model.User)
-	Delete(*model.User)
+	FindById(model.UserId) (bool, *model.User, error)
+	FindByEmail(model.UserEmail) (bool, *model.User)
+	Register(*model.User) error
+	Update(*model.User) (*model.User, error)
+	Delete(*model.User) error
 }

@@ -1,25 +1,32 @@
 package blogapp
 
-import "cook-blog/domain/model"
+import (
+	"cook-blog/domain/model"
+	"time"
+)
 
 /* return blog info */
 type BlogResponse struct {
-	Id       int    `json:"id"`
-	UserId   int    `json:"user_id"`
-	Content  string `json:"content"`
-	Title    string `json:"title"`
-	Abstract string `json:"abstract"`
-	View     int    `json:"view"`
+	BlogId    int       `json:"blog_id"`
+	UserId    string    `json:"user_id"`
+	Content   string    `json:"content"`
+	Title     string    `json:"title"`
+	Abstract  string    `json:"abstract"`
+	View      int       `json:"view"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 func NewBlogResponse(b *model.Blog) BlogResponse {
 	return BlogResponse{
-		Id:       int(b.Id),
-		UserId:   int(b.UserId),
-		Content:  string(b.Content),
-		Title:    string(b.Title),
-		Abstract: string(b.Abstract),
-		View:     int(b.View),
+		BlogId:    int(b.BlogId),
+		UserId:    string(b.UserId),
+		Content:   string(b.Content),
+		Title:     string(b.Title),
+		Abstract:  string(b.Abstract),
+		View:      int(b.View),
+		CreatedAt: b.CreatedAt,
+		UpdatedAt: b.UpdatedAt,
 	}
 }
 

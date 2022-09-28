@@ -5,28 +5,28 @@ import (
 )
 
 type User struct {
-	UserId    UserId
-	Name      UserName
-	Email     UserEmail
-	Password  UserPassword
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	UserId         UserId
+	Name           UserName
+	Email          UserEmail
+	HashedPassword UserHashedPassword
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
 }
 
 /* constructor */
 type CommandNewUser struct {
-	UserId   UserId
-	Name     UserName
-	Email    UserEmail
-	Password UserPassword
+	UserId         UserId
+	Name           UserName
+	Email          UserEmail
+	HashedPassword UserHashedPassword
 }
 
 func NewUser(command CommandNewUser) (*User, error) {
 	return &User{
-		UserId:   command.UserId,
-		Name:     command.Name,
-		Email:    command.Email,
-		Password: command.Password,
+		UserId:         command.UserId,
+		Name:           command.Name,
+		Email:          command.Email,
+		HashedPassword: command.HashedPassword,
 	}, nil
 }
 
@@ -49,7 +49,7 @@ func (u *User) UpdateEmail(email UserEmail) error {
 }
 
 /* update password */
-func (u *User) UpdatePassword(password UserPassword) error {
-	u.Password = password
+func (u *User) UpdatePassword(hashedPassword UserHashedPassword) error {
+	u.HashedPassword = hashedPassword
 	return nil
 }

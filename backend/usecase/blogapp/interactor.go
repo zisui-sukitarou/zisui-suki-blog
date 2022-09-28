@@ -3,6 +3,7 @@ package blogapp
 import (
 	"cook-blog/domain/model"
 	"cook-blog/domain/repository"
+	"errors"
 )
 
 type BlogInteractor struct {
@@ -23,13 +24,21 @@ func NewBlogInteractor(
 
 func (b *BlogInteractor) FindById(request BlogFindByIdRequest) {
 	/* input data ->　model object */
-	blogId, err := model.NewBlogId(request.Id)
+	blogId, err := model.NewBlogId(request.BlogId)
+	if err != nil {
+		b.OutputPort.RespondErorr(err)
+	}
+
+	/* find */
+	exists, blog, err := b.Repository.FindById(blogId)
+	if !exists {
+		b.OutputPort.RespondErorr(errors.New("blog of the id dosen't exist"))
+	}
 	if err != nil {
 		b.OutputPort.RespondErorr(err)
 	}
 
 	/* response */
-	blog := b.Repository.FindById(blogId)
 	response := NewBlogResponse(blog)
 	b.OutputPort.RespondBlog(response)
 }
@@ -41,8 +50,13 @@ func (b *BlogInteractor) FindByUserId(request BlogFindByUserIdRequest) {
 		b.OutputPort.RespondErorr(err)
 	}
 
+	/* find */
+	blogs, err := b.Repository.FindByUserId(userId)
+	if err != nil {
+		b.OutputPort.RespondErorr(err)
+	}
+
 	/* response */
-	blogs := b.Repository.FindByUserId(userId)
 	response := NewBlogsResponse(blogs)
 	b.OutputPort.RespondBlogs(response)
 }
@@ -53,19 +67,27 @@ func (b *BlogInteractor) FindByTagId(request BlogFindByTagIdRequest) {
 
 func (b *BlogInteractor) Delete(request BlogDeleteRequest) {
 	/* input data -> model object */
-	blogId, err := model.NewBlogId(request.Id)
+	blogId, err := model.NewBlogId(request.BlogId)
+	if err != nil {
+		b.OutputPort.RespondErorr(err)
+	}
+
+	/* find */
+	exists, blog, err := b.Repository.FindById(blogId)
+	if !exists {
+		b.OutputPort.RespondErorr(errors.New("blog of the id dosen't exist"))
+	}
 	if err != nil {
 		b.OutputPort.RespondErorr(err)
 	}
 
 	/* delete */
-	blog := b.Repository.FindById(blogId)
 	b.Repository.Delete(blog)
 }
 
 func (b *BlogInteractor) Update(request BlogUpdateRequest) {
 	/* input data -> madel object */
-	blogId, err := model.NewBlogId(request.Id)
+	blogId, err := model.NewBlogId(request.BlogId)
 	if err != nil {
 		b.OutputPort.RespondErorr(err)
 	}
@@ -85,8 +107,16 @@ func (b *BlogInteractor) Update(request BlogUpdateRequest) {
 		b.OutputPort.RespondErorr(err)
 	}
 
-	/* update */
-	blog := b.Repository.FindById(blogId)
+	/* find */
+	exists, blog, err := b.Repository.FindById(blogId)
+	if !exists {
+		b.OutputPort.RespondErorr(errors.New("blog of the id dosen't exist"))
+	}
+	if err != nil {
+		b.OutputPort.RespondErorr(err)
+	}
+
+	/* update & save */
 	blog.Update(model.CommandUpdateBlog{
 		Content:  content,
 		Abstract: abstract,
