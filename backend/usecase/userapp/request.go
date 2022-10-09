@@ -14,6 +14,7 @@ type UserSignUpRequest struct {
 	Name        string `json:"name"`
 	Email       string `json:"email"`
 	RawPassword string `json:"password"`
+	Icon        string `json:"icon"`
 }
 
 type UserFindByIdRequest struct {
@@ -24,6 +25,7 @@ type UserUpdateRequest struct {
 	UserId string `json:"user_id"`
 	Name   string `json:"name"`
 	Email  string `json:"email"`
+	Icon   string `json:"icon"`
 }
 
 type UserUpdatePasswordRequest struct {

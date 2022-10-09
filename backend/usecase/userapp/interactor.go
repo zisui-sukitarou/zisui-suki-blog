@@ -90,6 +90,11 @@ func (u *UserInteractor) SignUp(request UserSignUpRequest) {
 		u.OutputPort.RespondErorr(err)
 	}
 
+	icon, err := model.NewUserIcon(request.Icon)
+	if err != nil {
+		u.OutputPort.RespondErorr(err)
+	}
+
 	/* hash password */
 	userService := service.User{}
 	hashedPassword, err := userService.HashPassword(rawPassword)
@@ -98,16 +103,7 @@ func (u *UserInteractor) SignUp(request UserSignUpRequest) {
 	}
 
 	/* create new user object */
-	command := model.CommandNewUser{
-		UserId: userId,
-		Name: name,
-		Email: email,
-		HashedPassword: hashedPassword,
-	}
-	user, err := model.NewUser(command)
-	if err != nil {
-		u.OutputPort.RespondErorr(err)
-	}
+	user := model.NewUser(userId, name, email, hashedPassword, icon)
 
 	/* check overlapping (user id) */
 	exits, err := userService.Exists(user.UserId, u.Repository)
@@ -162,6 +158,11 @@ func (u *UserInteractor) Update(request UserUpdateRequest) {
 		u.OutputPort.RespondErorr(err)
 	}
 
+	icon, err := model.NewUserIcon(request.Icon)
+	if err != nil {
+		u.OutputPort.RespondErorr(err)
+	}
+
 	/* find user by id */
 	exists, user, err := u.Repository.FindById(userId)
 	if err != nil {
@@ -174,6 +175,7 @@ func (u *UserInteractor) Update(request UserUpdateRequest) {
 	/* update & save */
 	user.UpdateName(name)
 	user.UpdateEmail(email)
+	user.UpdateIcon(icon)
 	nUser, err := u.Repository.Update(user)
 	if err != nil {
 		u.OutputPort.RespondErorr(err)
@@ -231,5 +233,5 @@ func (u *UserInteractor) UpdatePassword(request UserUpdatePasswordRequest) {
 }
 
 func (u *UserInteractor) Delete(request UserDeleteRequest) {
-	
+
 }

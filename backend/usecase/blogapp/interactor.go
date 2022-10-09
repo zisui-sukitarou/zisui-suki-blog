@@ -3,6 +3,7 @@ package blogapp
 import (
 	"cook-blog/domain/model"
 	"cook-blog/domain/repository"
+	"cook-blog/domain/service"
 	"errors"
 )
 
@@ -107,6 +108,11 @@ func (b *BlogInteractor) Update(request BlogUpdateRequest) {
 		b.OutputPort.RespondErorr(err)
 	}
 
+	evaluation, err := model.NewBlogEvaluation(request.Evaluation)
+	if err != nil {
+		b.OutputPort.RespondErorr(err)
+	}
+
 	/* find */
 	exists, blog, err := b.Repository.FindById(blogId)
 	if !exists {
@@ -117,11 +123,7 @@ func (b *BlogInteractor) Update(request BlogUpdateRequest) {
 	}
 
 	/* update & save */
-	blog.Update(model.CommandUpdateBlog{
-		Content:  content,
-		Abstract: abstract,
-		Title:    title,
-	})
+	blog.Update(content, title, abstract, evaluation)
 	b.Repository.Update(blog)
 }
 
@@ -147,12 +149,24 @@ func (b *BlogInteractor) Register(request BlogRegisterRequest) {
 		b.OutputPort.RespondErorr(err)
 	}
 
-	/* register */
-	blog, err := model.NewBlog(model.CommandNewBlog{
-		UserId:   userId,
-		Content:  content,
-		Title:    title,
-		Abstract: abstract,
-	})
+	evaluation, err := model.NewBlogEvaluation(request.Evaluation)
+	if err != nil {
+		b.OutputPort.RespondErorr(err)
+	}
+
+	/* gen blog_id */
+	blogService := service.Blog{}
+	id, err := blogService.GenULID()
+	if err != nil {
+		b.OutputPort.RespondErorr(err)
+	}
+
+	blogId, err := model.NewBlogId(id.String())
+	if err != nil {
+		b.OutputPort.RespondErorr(err)
+	}
+
+	/* create & save */
+	blog := model.NewBlog(blogId, userId, content, title, abstract, evaluation)
 	b.Repository.Register(blog)
 }

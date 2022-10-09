@@ -2,9 +2,9 @@ package model
 
 import validation "github.com/go-ozzo/ozzo-validation"
 
-type BlogEvaluation int
+type BlogEvaluation uint
 
-func NewBlogEvaluation(evaluation int) (BlogEvaluation, error) {
+func NewBlogEvaluation(evaluation uint) (BlogEvaluation, error) {
 	if err := validation.Validate(evaluation,
 		validation.Min(0),
 		validation.Max(10),

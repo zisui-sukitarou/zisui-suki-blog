@@ -51,6 +51,12 @@ func (u *User) UpdateEmail(email UserEmail) {
 	u.UpdatedAt = time.Now()
 }
 
+/* update icon url */
+func (u *User) UpdateIcon(icon UserIcon) {
+	u.Icon = icon
+	u.UpdatedAt = time.Now()
+}
+
 /* update password */
 func (u *User) UpdatePassword(hashedPassword UserHashedPassword) {
 	u.HashedPassword = hashedPassword
