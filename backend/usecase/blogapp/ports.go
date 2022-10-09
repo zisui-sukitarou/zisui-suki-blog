@@ -8,3 +8,9 @@ type BlogInputPort interface {
 	Update(BlogUpdateRequest)
 	Register(BlogRegisterRequest)
 }
+
+type BlogOutputPort interface {
+	RespondBlog(BlogResponse)
+	RespondBlogs([]BlogResponse)
+	RespondErorr(error)
+}

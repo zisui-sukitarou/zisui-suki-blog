@@ -5,49 +5,47 @@ import (
 )
 
 type Blog struct {
-	BlogId    BlogId
-	UserId    UserId
-	Content   BlogContent
-	Title     BlogTitle
-	Abstract  BlogAbstract
-	View      BlogView
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	BlogId     BlogId
+	UserId     UserId
+	Content    BlogContent
+	Title      BlogTitle
+	Abstract   BlogAbstract
+	Evaluation BlogEvaluation
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }
 
 /* constructor */
-type CommandNewBlog struct {
-	UserId   UserId
-	Content  BlogContent
-	Title    BlogTitle
-	Abstract BlogAbstract
-}
-
-func NewBlog(command CommandNewBlog) (*Blog, error) {
+func NewBlog(
+	blogId BlogId,
+	userId UserId,
+	content BlogContent,
+	title BlogTitle,
+	abstract BlogAbstract,
+	evaluation BlogEvaluation,
+) *Blog {
 	return &Blog{
-		UserId:   command.UserId,
-		Content:  command.Content,
-		Title:    command.Title,
-		Abstract: command.Abstract,
-	}, nil
+		BlogId:     blogId,
+		UserId:     userId,
+		Content:    content,
+		Title:      title,
+		Abstract:   abstract,
+		Evaluation: evaluation,
+		CreatedAt:  time.Now(),
+		UpdatedAt:  time.Now(),
+	}
 }
 
 /* change content */
-type CommandUpdateBlog struct {
-	Content  BlogContent
-	Title    BlogTitle
-	Abstract BlogAbstract
-}
-
-func (b *Blog) Update(command CommandUpdateBlog) error {
-	b.Content = command.Content
-	b.Title = command.Title
-	b.Abstract = command.Abstract
-	return nil
-}
-
-/* increment view */
-func (b *Blog) IncView() error {
-	b.View++
-	return nil
+func (b *Blog) Update(
+	content BlogContent,
+	title BlogTitle,
+	abstract BlogAbstract,
+	evaluation BlogEvaluation,
+) {
+	b.Content = content
+	b.Title = title
+	b.Abstract = abstract
+	b.Evaluation = evaluation
+	b.UpdatedAt = time.Now()
 }

@@ -9,14 +9,13 @@ type Like struct {
 }
 
 /* constructor */
-type CommandNewLike struct {
-	BlogId BlogId
-	UserId UserId
-}
-
-func NewLike(command CommandNewLike) (*Like, error) {
+func NewLike(
+	blogId BlogId,
+	userId UserId,
+) *Like {
 	return &Like{
-		BlogId: command.BlogId,
-		UserId: command.UserId,
-	}, nil
+		BlogId:    blogId,
+		UserId:    userId,
+		CreatedAt: time.Now(),
+	}
 }

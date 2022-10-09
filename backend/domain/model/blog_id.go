@@ -1,7 +1,7 @@
 package model
 
-type BlogId int
+type BlogId string
 
-func NewBlogId(id int) (BlogId, error){
+func NewBlogId(id string) (BlogId, error) {
 	return BlogId(id), nil
 }

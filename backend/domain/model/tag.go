@@ -3,17 +3,14 @@ package model
 import "time"
 
 type Tag struct {
-	TagName      TagName
+	TagName   TagName
 	CreatedAt time.Time
 }
 
 /* constructor */
-type CommandNewTag struct {
-	TagName TagName
-}
-
-func NewTag(command CommandNewTag) (*Tag, error) {
+func NewTag(tagName TagName) *Tag {
 	return &Tag{
-		TagName: command.TagName,
-	}, nil
+		TagName:   tagName,
+		CreatedAt: time.Now(),
+	}
 }

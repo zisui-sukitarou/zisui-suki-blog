@@ -1,12 +1,16 @@
 package model
 
-import "errors"
+import (
+	validation "github.com/go-ozzo/ozzo-validation"
+)
 
 type BlogTitle string
 
-func NewBlogTitle(title string) (BlogTitle, error){
-	if len(title) <= 0 {
-		return BlogTitle(""), errors.New("title is empty")
+func NewBlogTitle(title string) (BlogTitle, error) {
+	if err := validation.Validate(title,
+		validation.Required,
+	); err != nil {
+		return BlogTitle(""), err
 	}
 
 	return BlogTitle(title), nil
