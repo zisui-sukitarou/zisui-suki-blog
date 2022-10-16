@@ -70,6 +70,131 @@ func TestRegisterTags(t *testing.T) {
 	}
 }
 
+/* find by user_id */
+func findByUserId(db *db.DB, userId model.UserId, begin uint, end uint) ([]*model.Blog, error) {
+	return gateway.NewBlogGateway(db.Client, &db.Ctx).FindByUserId(userId, begin, end)
+}
+
+type findByUserIdTestData struct {
+	userId  model.UserId
+	begin   uint
+	end     uint
+}
+
+func TestFindByUserId(t *testing.T) {
+	data := []findByUserIdTestData{
+		{
+			userId: model.UserId("zisui-sukitarou"),
+			begin: 0,
+			end: 10,
+		},
+	}
+
+	db, err := db.Init()
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	for _, d := range data {
+		blogs, err := findByUserId(db, d.userId, d.begin, d.end)
+		if err != nil {
+			t.Errorf(err.Error())
+		}
+		for i, v := range blogs {
+			log.Println("blog", i, ":")
+			log.Print(v)
+		}
+	}
+}
+
+/* find by user_id & tag_name */
+func findByTagName(db *db.DB, tagName model.TagName, begin uint, end uint) ([]*model.Blog, error) {
+	return gateway.NewBlogGateway(db.Client, &db.Ctx).FindByTagName(tagName, begin, end)
+}
+
+type findByTagNameTestData struct {
+	tagName model.TagName
+	begin   uint
+	end     uint
+}
+
+func TestFindByTagName(t *testing.T) {
+	data := []findByTagNameTestData{
+		{
+			tagName: model.TagName("pasta"),
+			begin: 0,
+			end: 10,
+		},
+		{
+			tagName: model.TagName("ramen"),
+			begin: 0,
+			end: 10,
+		},
+	}
+
+	db, err := db.Init()
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	for _, d := range data {
+		blogs, err := findByTagName(db, d.tagName, d.begin, d.end)
+		if err != nil {
+			t.Errorf(err.Error())
+		}
+		for i, v := range blogs {
+			log.Println("blog", i, ":")
+			log.Print(v)
+		}
+	}
+}
+
+/* find by user_id & tag_name */
+func findByUserIdAndTagName(db *db.DB, userId model.UserId, tagName model.TagName, begin uint, end uint) ([]*model.Blog, error) {
+	return gateway.NewBlogGateway(db.Client, &db.Ctx).FindByUserIdAndTagName(userId, tagName, begin, end)
+}
+
+type findByUserIdAndTagNameTestData struct {
+	userId  model.UserId
+	tagName model.TagName
+	begin   uint
+	end     uint
+}
+
+func TestFindByUserIdAndTagName(t *testing.T) {
+	data := []findByUserIdAndTagNameTestData{
+		{
+			userId: model.UserId("zisui-sukitarou"),
+			tagName: model.TagName("pasta"),
+			begin: 0,
+			end: 10,
+		},
+		{
+			userId: model.UserId("zisui-sukitarou"),
+			tagName: model.TagName("ramen"),
+			begin: 0,
+			end: 10,
+		},
+	}
+
+	db, err := db.Init()
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	for _, d := range data {
+		blogs, err := findByUserIdAndTagName(db, d.userId, d.tagName, d.begin, d.end)
+		if err != nil {
+			t.Errorf(err.Error())
+		}
+		for i, v := range blogs {
+			log.Println("blog", i, ":")
+			log.Print(v)
+		}
+	}
+}
+
+/* service constructor */
 func newBlogService() *service.Blog {
 	return &service.Blog{}
 }

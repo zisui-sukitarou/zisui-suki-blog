@@ -6,6 +6,7 @@ import (
 	"zisui-suki-blog/domain/model"
 	"zisui-suki-blog/domain/repository"
 	"zisui-suki-blog/domain/service"
+	"zisui-suki-blog/usecase/apperr"
 )
 
 type UserInteractor struct {
@@ -24,16 +25,16 @@ func NewUserInteractor(
 	}
 }
 
-func (u *UserInteractor) Login(request UserLoginRequest) error {
+func (u *UserInteractor) Login(request *UserLoginRequest) error {
 	/* input data -> model object */
 	userId, err := model.NewUserId(request.UserId)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 
 	rawPassword, err := model.NewUserRawPassword(request.RawPassword)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 
 	/* login */
@@ -43,13 +44,13 @@ func (u *UserInteractor) Login(request UserLoginRequest) error {
 		return u.OutputPort.RespondAuthenticationFailure()
 	}
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 
 	/* is correct password ? */
 	ok, err := userService.IsConfigured(user.HashedPassword, rawPassword)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 	if !ok {
 		return u.OutputPort.RespondAuthenticationFailure()
@@ -57,17 +58,17 @@ func (u *UserInteractor) Login(request UserLoginRequest) error {
 	return u.OutputPort.RespondLoginSuccess(NewUserResponse(user))
 }
 
-func (u *UserInteractor) Logout(request UserLogoutRequest) error {
+func (u *UserInteractor) Logout(request *UserLogoutRequest) error {
 	/* input data -> model object */
 	userId, err := model.NewUserId(request.UserId)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 
 	/* find user */
 	exists, user, err := u.Repository.FindById(userId)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 	if !exists {
 		return u.OutputPort.RespondAuthenticationFailure()
@@ -77,38 +78,38 @@ func (u *UserInteractor) Logout(request UserLogoutRequest) error {
 	return u.OutputPort.RespondLogoutSuccess(NewUserResponse(user))
 }
 
-func (u *UserInteractor) SignUp(request UserSignUpRequest) error {
+func (u *UserInteractor) SignUp(request *UserSignUpRequest) error {
 	/* input data -> model object */
 	userId, err := model.NewUserId(request.UserId)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 
 	name, err := model.NewUserName(request.Name)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 
 	email, err := model.NewUserEmail(request.Email)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 
 	rawPassword, err := model.NewUserRawPassword(request.RawPassword)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 
 	icon, err := model.NewUserIcon(request.Icon)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 
 	/* hash password */
 	userService := service.User{}
 	hashedPassword, err := userService.HashPassword(rawPassword)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 
 	/* create new user object */
@@ -117,7 +118,7 @@ func (u *UserInteractor) SignUp(request UserSignUpRequest) error {
 	/* check overlapping (user id) */
 	exits, err := userService.Exists(user.UserId, u.Repository)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 	if exits {
 		return u.OutputPort.RespondSignupFailure()
@@ -126,62 +127,62 @@ func (u *UserInteractor) SignUp(request UserSignUpRequest) error {
 	/* save */
 	err = u.Repository.Register(user)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 
 	/* response */
 	return u.OutputPort.RespondSignupSuccess(NewUserResponse(user))
 }
 
-func (u *UserInteractor) FindById(request UserFindByIdRequest) error {
+func (u *UserInteractor) FindById(request *UserFindByIdRequest) error {
 	/* input data -> model object */
 	userId, err := model.NewUserId(request.UserId)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 
 	/* find user by id */
 	exists, user, err := u.Repository.FindById(userId)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 	if !exists {
-		return u.OutputPort.RespondError(errors.New("user of the id dosen't exists"))
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(errors.New("user of the id dosen't exists")))
 	}
 
 	/* response */
 	return u.OutputPort.RespondUser(NewUserResponse(user))
 }
 
-func (u *UserInteractor) Update(request UserUpdateRequest) error {
+func (u *UserInteractor) Update(request *UserUpdateRequest) error {
 	/* input data -> model object */
 	userId, err := model.NewUserId(request.UserId)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 
 	name, err := model.NewUserName(request.Name)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 
 	email, err := model.NewUserEmail(request.Email)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 
 	icon, err := model.NewUserIcon(request.Icon)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 
 	/* find user by id */
 	exists, user, err := u.Repository.FindById(userId)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 	if !exists {
-		return u.OutputPort.RespondError(errors.New("user of the id dosen't exists"))
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(errors.New("user of the id dosen't exists")))
 	}
 
 	/* update & save */
@@ -190,43 +191,43 @@ func (u *UserInteractor) Update(request UserUpdateRequest) error {
 	user.UpdateIcon(icon)
 	nUser, err := u.Repository.Update(user)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 
 	/* response */
 	return u.OutputPort.RespondUser(NewUserResponse(nUser))
 }
 
-func (u *UserInteractor) UpdatePassword(request UserUpdatePasswordRequest) error {
+func (u *UserInteractor) UpdatePassword(request *UserUpdatePasswordRequest) error {
 	/* input data -> model object */
 	userId, err := model.NewUserId(request.UserId)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 
 	oldPass, err := model.NewUserRawPassword(request.OldPassword)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 
 	newPass, err := model.NewUserRawPassword(request.NewPassword)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 
 	/* configure user */
 	exists, user, err := u.Repository.FindById(userId)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 	if !exists {
-		return u.OutputPort.RespondError(errors.New("user of the id dosen't exists"))
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(errors.New("user of the id dosen't exists")))
 	}
 
 	userService := service.User{}
 	ok, err := userService.IsConfigured(user.HashedPassword, oldPass)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 	if !ok {
 		return u.OutputPort.RespondAuthenticationFailure()
@@ -235,18 +236,18 @@ func (u *UserInteractor) UpdatePassword(request UserUpdatePasswordRequest) error
 	/* update password & save */
 	newHash, err := userService.HashPassword(newPass)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 	user.UpdatePassword(newHash)
 	user, err = u.Repository.Update(user)
 	if err != nil {
-		return u.OutputPort.RespondError(err)
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
 	}
 
 	/* response */
 	return u.OutputPort.RespondUser(NewUserResponse(user))
 }
 
-func (u *UserInteractor) Delete(request UserDeleteRequest) error {
+func (u *UserInteractor) Delete(request *UserDeleteRequest) error {
 	return nil
 }

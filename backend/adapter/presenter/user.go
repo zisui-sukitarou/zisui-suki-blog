@@ -7,14 +7,14 @@ import (
 )
 
 type UserPresenter struct {
-	ctx echo.Context
+	c echo.Context
 }
 
 func NewUserPresenter(
-	ctx echo.Context,
+	c echo.Context,
 ) userapp.UserOutputPort {
 	return &UserPresenter{
-		ctx: ctx,
+		c: c,
 	}
 }
 

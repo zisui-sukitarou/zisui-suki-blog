@@ -1,11 +1,11 @@
 package blogapp
 
 import (
-	"zisui-suki-blog/domain/model"
 	"time"
+	"zisui-suki-blog/domain/model"
 )
 
-/* return blog info */
+/*** Full Response ***/
 type BlogResponse struct {
 	BlogId    string    `json:"blog_id"`
 	UserId    string    `json:"user_id"`
@@ -16,8 +16,8 @@ type BlogResponse struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-func NewBlogResponse(b *model.Blog) BlogResponse {
-	return BlogResponse{
+func NewBlogResponse(b *model.Blog) *BlogResponse {
+	return &BlogResponse{
 		BlogId:    string(b.BlogId),
 		UserId:    string(b.UserId),
 		Content:   string(b.Content),
@@ -28,10 +28,31 @@ func NewBlogResponse(b *model.Blog) BlogResponse {
 	}
 }
 
-func NewBlogsResponse(bs []*model.Blog) []BlogResponse {
-	var res []BlogResponse
+/*** BlogReponse without Content ***/
+type BlogOverviewResponse struct {
+	BlogId    string    `json:"blog_id"`
+	UserId    string    `json:"user_id"`
+	Title     string    `json:"title"`
+	Abstract  string    `json:"abstract"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+func NewBlogOverviewResponse(b *model.Blog) *BlogOverviewResponse {
+	return &BlogOverviewResponse{
+		BlogId:    string(b.BlogId),
+		UserId:    string(b.UserId),
+		Title:     string(b.Title),
+		Abstract:  string(b.Abstract),
+		CreatedAt: b.CreatedAt,
+		UpdatedAt: b.UpdatedAt,
+	}
+}
+
+func NewBlogOverviewsResponse(bs []*model.Blog) []*BlogOverviewResponse {
+	var res []*BlogOverviewResponse
 	for _, v := range bs {
-		res = append(res, NewBlogResponse(v))
+		res = append(res, NewBlogOverviewResponse(v))
 	}
 	return res
 }

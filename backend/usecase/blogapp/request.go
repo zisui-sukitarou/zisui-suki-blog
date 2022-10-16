@@ -6,11 +6,21 @@ type BlogFindByIdRequest struct {
 
 type BlogFindByTagRequest struct {
 	TagName string `json:"tag_name"`
+	Begin   uint   `json:"begin"`
+	End     uint   `json:"end"`
 }
 
 type BlogFindByUserIdRequest struct {
 	UserId string `json:"user_id"`
-	UpTo   int    `json:"up_to"`
+	Begin   uint   `json:"begin"`
+	End     uint   `json:"end"`
+}
+
+type BlogFindByUserIdAndTagRequest struct {
+	TagName string `json:"tag_name"`
+	UserId  string `json:"user_id"`
+	Begin   uint   `json:"begin"`
+	End     uint   `json:"end"`
 }
 
 type BlogDeleteRequest struct {

@@ -9,8 +9,8 @@ type UserResponse struct {
 	Email  string `json:"email"`
 }
 
-func NewUserResponse(u *model.User) UserResponse {
-	return UserResponse{
+func NewUserResponse(u *model.User) *UserResponse {
+	return &UserResponse{
 		UserId: string(u.UserId),
 		Name:   string(u.Name),
 		Email:  string(u.Email),
