@@ -1,23 +1,21 @@
 package userapp
 
-import "cook-blog/domain/model"
-
 type UserInputPort interface {
-	Login(UserLoginRequest)
-	Logout(UserLogoutRequest)
-	SignUp(UserSignUpRequest)
-	FindById(UserFindByIdRequest)
-	Update(UserUpdateRequest)
-	UpdatePassword(UserUpdatePasswordRequest)
-	Delete(UserDeleteRequest)
+	Login(UserLoginRequest) error
+	Logout(UserLogoutRequest) error
+	SignUp(UserSignUpRequest) error
+	FindById(UserFindByIdRequest) error
+	Update(UserUpdateRequest) error
+	UpdatePassword(UserUpdatePasswordRequest) error
+	Delete(UserDeleteRequest) error
 }
 
 type UserOutputPort interface {
-	RespondUser(UserResponse)
-	RespondLoginSuccess(UserResponse) // user_id を元に JWT token を作成
-	RespondLogoutSuccess(model.UserId)
-	RespondSignupSuccess(UserResponse)
-	RespondSignupFailure()
-	RespondAuthenticationFailure()
-	RespondErorr(error)
+	RespondUser(UserResponse) error
+	RespondLoginSuccess(UserResponse) error // user_id を元に JWT token を作成
+	RespondLogoutSuccess(UserResponse) error
+	RespondSignupSuccess(UserResponse) error
+	RespondSignupFailure() error
+	RespondAuthenticationFailure() error
+	RespondError(error) error
 }

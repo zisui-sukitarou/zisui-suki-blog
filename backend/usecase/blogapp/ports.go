@@ -1,16 +1,16 @@
 package blogapp
 
 type BlogInputPort interface {
-	FindById(BlogFindByIdRequest)
-	FindByTagId(BlogFindByTagIdRequest)
-	FindByUserId(BlogFindByUserIdRequest)
-	Delete(BlogDeleteRequest)
-	Update(BlogUpdateRequest)
-	Register(BlogRegisterRequest)
+	FindById(BlogFindByIdRequest) error
+	FindByTagName(BlogFindByTagRequest) error
+	FindByUserId(BlogFindByUserIdRequest) error
+	Delete(BlogDeleteRequest) error
+	Update(BlogUpdateRequest) error
+	Register(BlogRegisterRequest) error
 }
 
 type BlogOutputPort interface {
-	RespondBlog(BlogResponse)
-	RespondBlogs([]BlogResponse)
-	RespondErorr(error)
+	RespondBlog(BlogResponse) error
+	RespondBlogs([]BlogResponse) error
+	RespondErorr(error) error
 }

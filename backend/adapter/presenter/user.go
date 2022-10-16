@@ -1,23 +1,47 @@
 package presenter
 
 import (
-	"cook-blog/usecase/userapp"
+	"zisui-suki-blog/usecase/userapp"
 
-	"github.com/gin-gonic/gin"
+	"github.com/labstack/echo/v4"
 )
 
 type UserPresenter struct {
-	c *gin.Context
+	ctx echo.Context
 }
 
 func NewUserPresenter(
-	c *gin.Context,
+	ctx echo.Context,
 ) userapp.UserOutputPort {
 	return &UserPresenter{
-		c: c,
+		ctx: ctx,
 	}
 }
 
 func (u *UserPresenter) RespondUser(user userapp.UserResponse) {
+	
+}
+
+func (u *UserPresenter) RespondLoginSuccess(user userapp.UserResponse) {
+
+}
+
+func (u *UserPresenter) RespondLogoutSuccess(user userapp.UserResponse) {
+	
+}
+
+func (u *UserPresenter) RespondSignupSuccess(user userapp.UserResponse) {
+	
+}
+
+func (u *UserPresenter) RespondSignupFailure() {
+	
+}
+
+func (u *UserPresenter) RespondAuthenticationFailure() {
+	
+}
+
+func (u *UserPresenter) RespondError(err error) {
 	
 }

@@ -1,20 +1,19 @@
 package presenter
 
 import (
-	"cook-blog/usecase/blogapp"
+	"zisui-suki-blog/usecase/blogapp"
 
-	"github.com/gin-gonic/gin"
+	"github.com/labstack/echo/v4"
 )
 
 type BlogPresenter struct {
-	c *gin.Context
+	c echo.Context
 }
 
 func NewBlogPresenter(
-	c *gin.Context,
+	c *echo.Context,
 ) blogapp.BlogOutputPort {
 	return &BlogPresenter{
-		c: c,
+		ctx: ctx,
 	}
 }
-

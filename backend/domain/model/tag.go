@@ -8,9 +8,12 @@ type Tag struct {
 }
 
 /* constructor */
-func NewTag(tagName TagName) *Tag {
+func NewTag(
+	tagName TagName,
+	createdAt time.Time,
+) *Tag {
 	return &Tag{
 		TagName:   tagName,
-		CreatedAt: time.Now(),
+		CreatedAt: createdAt,
 	}
 }

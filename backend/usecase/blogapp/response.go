@@ -1,7 +1,7 @@
 package blogapp
 
 import (
-	"cook-blog/domain/model"
+	"zisui-suki-blog/domain/model"
 	"time"
 )
 

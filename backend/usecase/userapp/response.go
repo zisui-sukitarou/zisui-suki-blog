@@ -1,6 +1,6 @@
 package userapp
 
-import "cook-blog/domain/model"
+import "zisui-suki-blog/domain/model"
 
 /* return user info */
 type UserResponse struct {

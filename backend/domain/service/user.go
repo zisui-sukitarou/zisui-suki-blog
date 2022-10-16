@@ -1,8 +1,8 @@
 package service
 
 import (
-	"cook-blog/domain/model"
-	"cook-blog/domain/repository"
+	"zisui-suki-blog/domain/model"
+	"zisui-suki-blog/domain/repository"
 
 	"golang.org/x/crypto/bcrypt"
 )

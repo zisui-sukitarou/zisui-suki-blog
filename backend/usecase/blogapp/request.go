@@ -4,8 +4,8 @@ type BlogFindByIdRequest struct {
 	BlogId string `json:"blog_id"`
 }
 
-type BlogFindByTagIdRequest struct {
-	TagId string `json:"tag_id"`
+type BlogFindByTagRequest struct {
+	TagName string `json:"tag_name"`
 }
 
 type BlogFindByUserIdRequest struct {
@@ -27,9 +27,10 @@ type BlogUpdateRequest struct {
 }
 
 type BlogRegisterRequest struct {
-	UserId     string `json:"user_id"`
-	Content    string `json:"content"`
-	Title      string `json:"title"`
-	Abstract   string `json:"abstract"`
-	Evaluation uint   `json:"evaluation"`
+	UserId     string   `json:"user_id"`
+	Content    string   `json:"content"`
+	Title      string   `json:"title"`
+	Abstract   string   `json:"abstract"`
+	Evaluation uint     `json:"evaluation"`
+	Tags       []string `json:"tags"`
 }

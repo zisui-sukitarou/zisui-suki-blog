@@ -10,7 +10,6 @@ type UserEmail string
 func NewUserEmail(userEmail string) (UserEmail, error){
 	if err := validation.Validate(userEmail,
 		validation.Required,
-		validation.Length(1, 63),
 		is.Email,
 	); err != nil{
 		return UserEmail(""), err

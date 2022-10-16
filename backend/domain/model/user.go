@@ -21,6 +21,8 @@ func NewUser(
 	email UserEmail,
 	hashedPassword UserHashedPassword,
 	icon UserIcon,
+	createdAt time.Time,
+	updatedAt time.Time,
 ) *User {
 	return &User{
 		UserId:         userId,
@@ -28,8 +30,8 @@ func NewUser(
 		Email:          email,
 		HashedPassword: hashedPassword,
 		Icon:           icon,
-		CreatedAt:      time.Now(),
-		UpdatedAt:      time.Now(),
+		CreatedAt:      createdAt,
+		UpdatedAt:      updatedAt,
 	}
 }
 

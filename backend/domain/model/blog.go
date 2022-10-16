@@ -23,6 +23,8 @@ func NewBlog(
 	title BlogTitle,
 	abstract BlogAbstract,
 	evaluation BlogEvaluation,
+	createdAt time.Time,
+	updatedAt time.Time,
 ) *Blog {
 	return &Blog{
 		BlogId:     blogId,
@@ -31,8 +33,8 @@ func NewBlog(
 		Title:      title,
 		Abstract:   abstract,
 		Evaluation: evaluation,
-		CreatedAt:  time.Now(),
-		UpdatedAt:  time.Now(),
+		CreatedAt:  createdAt,
+		UpdatedAt:  updatedAt,
 	}
 }
 

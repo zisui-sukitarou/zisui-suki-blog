@@ -1,38 +1,57 @@
 package controller
 
 import (
-	"cook-blog/domain/repository"
-	"cook-blog/usecase/userapp"
+	"context"
+	"zisui-suki-blog/adapter/gateway"
+	"zisui-suki-blog/adapter/presenter"
+	"zisui-suki-blog/ent"
+	"zisui-suki-blog/usecase/userapp"
 
-	"github.com/gin-gonic/gin"
+	"github.com/labstack/echo/v4"
 )
 
-type OutputFactory func(c *gin.Context) userapp.UserOutputPort
-type InputFactory func(userapp.UserOutputPort, repository.UserRepository) userapp.UserInputPort
-type RepositoryFactory func()
-
 type UserController struct {
-	outputFactory     OutputFactory
-	inputFactory      InputFactory
-	repositoryFactory RepositoryFactory
-	
+	client *ent.Client
 }
 
-func NewUserController()
-
-func (u *UserController) Login(c *gin.Context) {
-	/*
-		username = c.username
-		password = c.password
-
-		request = CreateRequest(username, password)
-
-		userapp.Login(request)
-	*/
+func NewUserController(client *ent.Client) *UserController {
+	return &UserController{
+		client: client,
+	}
 }
 
-func (u *UserController) Update(c *gin.Context) {
-	/*
+func (u *UserController) newInputPort(c echo.Context, ctx *context.Context) userapp.UserInputPort {
+	outputPort := presenter.NewUserPresenter(c)
+	repo := gateway.NewUserGateway(u.client, ctx)
+	return userapp.NewUserInteractor(outputPort, repo)
+}
 
-	 */
+func (u *UserController) Login(ctx *context.Context) func(c echo.Context) error {
+	return func(c echo.Context) error {
+		/* get request parameters */
+		request := userapp.UserLoginRequest{}
+		err := c.Bind(request)
+		if err != nil {
+			return err
+		}
+
+		/* return response */
+		inputPort := u.newInputPort(c, ctx)
+		return inputPort.Login(request)
+	}
+}
+
+func (u *UserController) Update(ctx *context.Context) func(c echo.Context) error {
+	return func(c echo.Context) error {
+		/* get request parameters */
+		request := userapp.UserUpdateRequest{}
+		err := c.Bind(request)
+		if err != nil {
+			return err
+		}
+
+		/* return response */
+		inputPort := u.newInputPort(c, ctx)
+		return inputPort.Update(request)
+	}
 }
