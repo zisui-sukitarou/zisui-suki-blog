@@ -23,46 +23,40 @@ func NewUserGateway(
 	}
 }
 
-func (g *UserGateway) FindById(userId model.UserId) (bool, *model.User, error) {
+func (g *UserGateway) FindById(userId model.UserId) (bool, *repository.UserData, error) {
 	user, err := g.Client.Debug().User.
 		Query().
 		Where(user.IDEQ(string(userId))).
 		First(*g.Context)
 	if err != nil {
-		return false, &model.User{}, err
+		return false, &repository.UserData{}, err
 	}
 
-	return true,
-		model.NewUser(
-			model.UserId(user.ID),
-			model.UserName(user.Name),
-			model.UserEmail(user.Email),
-			model.UserHashedPassword(user.Password),
-			model.UserIcon(user.Icon),
-			user.CreatedAt,
-			user.UpdatedAt,
-		), nil
+	return true, repository.NewUserData(
+		user.ID,
+		user.Name,
+		user.Email,
+		user.Icon,
+		user.CreatedAt,
+	), nil
 }
 
-func (g *UserGateway) FindByEmail(email model.UserEmail) (bool, *model.User, error) {
+func (g *UserGateway) FindByEmail(email model.UserEmail) (bool, *repository.UserData, error) {
 	user, err := g.Client.Debug().User.
 		Query().
 		Where(user.EmailEQ(string(email))).
 		First(*g.Context)
 	if err != nil {
-		return false, &model.User{}, err
+		return false, &repository.UserData{}, err
 	}
 
-	return true,
-		model.NewUser(
-			model.UserId(user.ID),
-			model.UserName(user.Name),
-			model.UserEmail(user.Email),
-			model.UserHashedPassword(user.Password),
-			model.UserIcon(user.Icon),
-			user.CreatedAt,
-			user.UpdatedAt,
-		), nil
+	return true, repository.NewUserData(
+		user.ID,
+		user.Name,
+		user.Email,
+		user.Icon,
+		user.CreatedAt,
+	), nil
 }
 
 func (g *UserGateway) Register(user *model.User) error {
@@ -78,7 +72,7 @@ func (g *UserGateway) Register(user *model.User) error {
 	return err
 }
 
-func (g *UserGateway) Update(nInfo *model.User) (*model.User, error) {
+func (g *UserGateway) Update(nInfo *model.User) (*repository.UserData, error) {
 	user, err := g.Client.Debug().User.
 		UpdateOneID(string(nInfo.UserId)).
 		SetName(string(nInfo.Name)).
@@ -86,17 +80,15 @@ func (g *UserGateway) Update(nInfo *model.User) (*model.User, error) {
 		SetIcon(string(nInfo.Icon)).
 		Save(*g.Context)
 	if err != nil {
-		return &model.User{}, err
+		return &repository.UserData{}, err
 	}
 
-	return model.NewUser(
-		model.UserId(user.ID),
-		model.UserName(user.Name),
-		model.UserEmail(user.Email),
-		model.UserHashedPassword(user.Password),
-		model.UserIcon(user.Icon),
+	return repository.NewUserData(
+		user.ID,
+		user.Name,
+		user.Email,
+		user.Icon,
 		user.CreatedAt,
-		user.UpdatedAt,
 	), nil
 }
 

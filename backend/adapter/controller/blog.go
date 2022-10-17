@@ -30,7 +30,7 @@ func (b *BlogController) Register(ctx *context.Context) func(c echo.Context) err
 		}
 
 		/* return response */
-		return b.newBlogInputPort(c, ctx).Register(request)
+		return b.inputPort(c, ctx).Register(request)
 	}
 }
 
@@ -44,7 +44,7 @@ func (b *BlogController) Update(ctx *context.Context) func(c echo.Context) error
 		}
 
 		/* return response */
-		return b.newBlogInputPort(c, ctx).Update(request)
+		return b.inputPort(c, ctx).Update(request)
 	}
 }
 
@@ -58,7 +58,7 @@ func (b *BlogController) FindById(ctx *context.Context) func(c echo.Context) err
 		}
 
 		/* return response */
-		return b.newBlogInputPort(c, ctx).FindById(request)
+		return b.inputPort(c, ctx).FindById(request)
 	}
 }
 
@@ -72,7 +72,7 @@ func (b *BlogController) FindByTagName(ctx *context.Context) func(c echo.Context
 		}
 
 		/* return response */
-		return b.newBlogInputPort(c, ctx).FindByTagName(request)
+		return b.inputPort(c, ctx).FindByTagName(request)
 	}
 }
 
@@ -86,7 +86,7 @@ func (b *BlogController) FindByUserId(ctx *context.Context) func(c echo.Context)
 		}
 
 		/* return response */
-		return b.newBlogInputPort(c, ctx).FindByUserId(request)
+		return b.inputPort(c, ctx).FindByUserId(request)
 	}
 }
 
@@ -100,7 +100,7 @@ func (b *BlogController) FindByUserIdAndTagName(ctx *context.Context) func(c ech
 		}
 
 		/* return response */
-		return b.newBlogInputPort(c, ctx).FindByUserIdAndTagName(request)
+		return b.inputPort(c, ctx).FindByUserIdAndTagName(request)
 	}
 }
 
@@ -114,12 +114,12 @@ func (b *BlogController) Delete(ctx *context.Context) func(c echo.Context) error
 		}
 
 		/* return response */
-		return b.newBlogInputPort(c, ctx).Delete(request)
+		return b.inputPort(c, ctx).Delete(request)
 	}
 }
 
 /* create input port */
-func (b *BlogController) newBlogInputPort(c echo.Context, ctx *context.Context) blogapp.BlogInputPort {
+func (b *BlogController) inputPort(c echo.Context, ctx *context.Context) blogapp.BlogInputPort {
 	outputPort := presenter.NewBlogPresenter(c)
 	repository := gateway.NewBlogGateway(b.client, ctx)
 	return blogapp.NewBlogInteractor(outputPort, repository)

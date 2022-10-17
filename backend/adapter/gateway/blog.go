@@ -25,29 +25,48 @@ func NewBlogGateway(
 	}
 }
 
-func (g *BlogGateway) FindById(blogId model.BlogId) (bool, *model.Blog, error) {
+func (g *BlogGateway) FindById(blogId model.BlogId) (bool, *repository.BlogData, error) {
 	blog, err := g.Client.Debug().Blog.
 		Query().
 		Where(blog.IDEQ(string(blogId))).
 		WithWriter().
+		WithTags().
 		First(*g.Context)
 	if err != nil {
-		return false, &model.Blog{}, err
+		return false, &repository.BlogData{}, err
 	}
 
-	return true, model.NewBlog(
-		model.BlogId(blog.ID),
-		model.UserId(blog.UserID),
-		model.BlogContent(blog.Content),
-		model.BlogTitle(blog.Title),
-		model.BlogAbstract(blog.Abstract),
-		model.BlogEvaluation(blog.Evaluation),
+	/* create writer data */
+	userData := repository.NewUserData(
+		blog.Edges.Writer.ID,
+		blog.Edges.Writer.Name,
+		blog.Edges.Writer.Email,
+		blog.Edges.Writer.Icon,
+		blog.Edges.Writer.CreatedAt,
+	)
+
+	/* create tags data */
+	var tags []*repository.TagData
+	for _, tag := range blog.Edges.Tags {
+		tags = append(tags, repository.NewTagData(
+			tag.ID,
+			tag.CreatedAt,
+		))
+	}
+
+	return true, repository.NewBlogData(
+		blog.ID,
+		blog.Content,
+		blog.Title,
+		blog.Abstract,
+		userData,
+		tags,
 		blog.CreatedAt,
-		blog.CreatedAt,
+		blog.UpdatedAt,
 	), nil
 }
 
-func (g *BlogGateway) FindByUserId(userId model.UserId, begin uint, end uint) ([]*model.Blog, error) {
+func (g *BlogGateway) FindByUserId(userId model.UserId, begin uint, end uint) ([]*repository.BlogOverviewData, error) {
 
 	// blog.content 以外を取得
 	blogs, err := g.Client.Debug().Blog.Query().
@@ -59,31 +78,48 @@ func (g *BlogGateway) FindByUserId(userId model.UserId, begin uint, end uint) ([
 		Select(blog.FieldCreatedAt).
 		Select(blog.FieldUpdatedAt).
 		Where(blog.HasWriterWith(user.IDEQ(string(userId)))).
+		WithWriter().
+		WithTags().
 		Offset(int(begin)).
 		Limit(int(end)).
 		All(*g.Context)
 	if err != nil {
-		return []*model.Blog{}, err
+		return []*repository.BlogOverviewData{}, err
 	}
 
-	// content は不要なのでから文字列で代替
-	var res []*model.Blog
+	var overviews []*repository.BlogOverviewData
 	for _, blog := range blogs {
-		res = append(res, model.NewBlog(
-			model.BlogId(blog.ID),
-			model.UserId(blog.UserID),
-			model.BlogContent(""),
-			model.BlogTitle(blog.Title),
-			model.BlogAbstract(blog.Abstract),
-			model.BlogEvaluation(blog.Evaluation),
+		/* create writer data */
+		userData := repository.NewUserData(
+			blog.Edges.Writer.ID,
+			blog.Edges.Writer.Name,
+			blog.Edges.Writer.Email,
+			blog.Edges.Writer.Icon,
+			blog.Edges.Writer.CreatedAt,
+		)
+		/* create tags data */
+		var tags []*repository.TagData
+		for _, tag := range blog.Edges.Tags {
+			tags = append(tags, repository.NewTagData(
+				tag.ID,
+				tag.CreatedAt,
+			))
+		}
+		/* create blog overviews */
+		overviews = append(overviews, repository.NewBlogOverviewData(
+			blog.ID,
+			blog.Title,
+			blog.Abstract,
+			userData,
+			tags,
 			blog.CreatedAt,
 			blog.UpdatedAt,
 		))
 	}
-	return res, nil
+	return overviews, nil
 }
 
-func (g *BlogGateway) FindByTagName(tagName model.TagName, begin uint, end uint) ([]*model.Blog, error) {
+func (g *BlogGateway) FindByTagName(tagName model.TagName, begin uint, end uint) ([]*repository.BlogOverviewData, error) {
 
 	// blog.content 以外を取得
 	blogs, err := g.Client.Debug().Blog.Query().
@@ -95,31 +131,48 @@ func (g *BlogGateway) FindByTagName(tagName model.TagName, begin uint, end uint)
 		Select(blog.FieldCreatedAt).
 		Select(blog.FieldUpdatedAt).
 		Where(blog.HasTagsWith(tag.IDEQ(string(tagName)))).
+		WithWriter().
+		WithTags().
 		Offset(int(begin)).
 		Limit(int(end)).
 		All(*g.Context)
 	if err != nil {
-		return []*model.Blog{}, err
+		return []*repository.BlogOverviewData{}, err
 	}
 
-	// content は不要なので空文字列で代替
-	var res []*model.Blog
+	var overviews []*repository.BlogOverviewData
 	for _, blog := range blogs {
-		res = append(res, model.NewBlog(
-			model.BlogId(blog.ID),
-			model.UserId(blog.UserID),
-			model.BlogContent(""),
-			model.BlogTitle(blog.Title),
-			model.BlogAbstract(blog.Abstract),
-			model.BlogEvaluation(blog.Evaluation),
+		/* create writer data */
+		userData := repository.NewUserData(
+			blog.Edges.Writer.ID,
+			blog.Edges.Writer.Name,
+			blog.Edges.Writer.Email,
+			blog.Edges.Writer.Icon,
+			blog.Edges.Writer.CreatedAt,
+		)
+		/* create tags data */
+		var tags []*repository.TagData
+		for _, tag := range blog.Edges.Tags {
+			tags = append(tags, repository.NewTagData(
+				tag.ID,
+				tag.CreatedAt,
+			))
+		}
+		/* create blog overviews */
+		overviews = append(overviews, repository.NewBlogOverviewData(
+			blog.ID,
+			blog.Title,
+			blog.Abstract,
+			userData,
+			tags,
 			blog.CreatedAt,
 			blog.UpdatedAt,
 		))
 	}
-	return res, nil
+	return overviews, nil
 }
 
-func (g *BlogGateway) FindByUserIdAndTagName(userId model.UserId, tagName model.TagName, begin uint, end uint) ([]*model.Blog, error) {
+func (g *BlogGateway) FindByUserIdAndTagName(userId model.UserId, tagName model.TagName, begin uint, end uint) ([]*repository.BlogOverviewData, error) {
 
 	// blog.content 以外を取得
 	blogs, err := g.Client.Debug().Blog.Query().
@@ -132,28 +185,45 @@ func (g *BlogGateway) FindByUserIdAndTagName(userId model.UserId, tagName model.
 		Select(blog.FieldUpdatedAt).
 		Where(blog.HasWriterWith(user.IDEQ(string(userId)))).
 		Where(blog.HasTagsWith(tag.IDEQ(string(tagName)))).
+		WithWriter().
+		WithTags().
 		Offset(int(begin)).
 		Limit(int(end)).
 		All(*g.Context)
 	if err != nil {
-		return []*model.Blog{}, err
+		return []*repository.BlogOverviewData{}, err
 	}
 
-	// content は不要なので空文字列で代替
-	var res []*model.Blog
+	var overviews []*repository.BlogOverviewData
 	for _, blog := range blogs {
-		res = append(res, model.NewBlog(
-			model.BlogId(blog.ID),
-			model.UserId(blog.UserID),
-			model.BlogContent(""),
-			model.BlogTitle(blog.Title),
-			model.BlogAbstract(blog.Abstract),
-			model.BlogEvaluation(blog.Evaluation),
+		/* create writer data */
+		userData := repository.NewUserData(
+			blog.Edges.Writer.ID,
+			blog.Edges.Writer.Name,
+			blog.Edges.Writer.Email,
+			blog.Edges.Writer.Icon,
+			blog.Edges.Writer.CreatedAt,
+		)
+		/* create tags data */
+		var tags []*repository.TagData
+		for _, tag := range blog.Edges.Tags {
+			tags = append(tags, repository.NewTagData(
+				tag.ID,
+				tag.CreatedAt,
+			))
+		}
+		/* create blog overviews */
+		overviews = append(overviews, repository.NewBlogOverviewData(
+			blog.ID,
+			blog.Title,
+			blog.Abstract,
+			userData,
+			tags,
 			blog.CreatedAt,
 			blog.UpdatedAt,
 		))
 	}
-	return res, nil
+	return overviews, nil
 }
 
 func (g *BlogGateway) Register(blog *model.Blog) error {
@@ -186,8 +256,8 @@ func (g *BlogGateway) RegisterTags(blogId model.BlogId, tagNames []model.TagName
 	return err
 }
 
-func (g *BlogGateway) Update(blog *model.Blog) (*model.Blog, error) {
-	return &model.Blog{}, nil
+func (g *BlogGateway) Update(blog *model.Blog) (*repository.BlogData, error) {
+	return &repository.BlogData{}, nil
 }
 
 func (g *BlogGateway) Delete(blog *model.Blog) error {

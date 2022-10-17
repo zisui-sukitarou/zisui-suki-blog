@@ -23,34 +23,34 @@ func NewUserController(client *ent.Client) *UserController {
 func (u *UserController) Login(ctx *context.Context) func(c echo.Context) error {
 	return func(c echo.Context) error {
 		/* get request parameters */
-		request := userapp.UserLoginRequest{}
+		request := &userapp.UserLoginRequest{}
 		err := c.Bind(request)
 		if err != nil {
 			return err
 		}
 
 		/* return response */
-		return u.newUserInputPort(c, ctx).Login(request)
+		return u.inputPort(c, ctx).Login(request)
 	}
 }
 
 func (u *UserController) Update(ctx *context.Context) func(c echo.Context) error {
 	return func(c echo.Context) error {
 		/* get request parameters */
-		request := userapp.UserUpdateRequest{}
+		request := &userapp.UserUpdateRequest{}
 		err := c.Bind(request)
 		if err != nil {
 			return err
 		}
 
 		/* return response */
-		return u.newUserInputPort(c, ctx).Update(request)
+		return u.inputPort(c, ctx).Update(request)
 	}
 }
 
 
 /* create input port */
-func (u *UserController) newUserInputPort(c echo.Context, ctx *context.Context) userapp.UserInputPort {
+func (u *UserController) inputPort(c echo.Context, ctx *context.Context) userapp.UserInputPort {
 	outputPort := presenter.NewUserPresenter(c)
 	repo := gateway.NewUserGateway(u.client, ctx)
 	return userapp.NewUserInteractor(outputPort, repo)

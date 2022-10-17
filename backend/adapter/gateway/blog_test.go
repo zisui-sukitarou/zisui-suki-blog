@@ -6,6 +6,7 @@ import (
 	"time"
 	"zisui-suki-blog/adapter/gateway"
 	"zisui-suki-blog/domain/model"
+	"zisui-suki-blog/domain/repository"
 	"zisui-suki-blog/domain/service"
 	"zisui-suki-blog/infrastructure/db"
 )
@@ -71,7 +72,7 @@ func TestRegisterTags(t *testing.T) {
 }
 
 /* find by user_id */
-func findByUserId(db *db.DB, userId model.UserId, begin uint, end uint) ([]*model.Blog, error) {
+func findByUserId(db *db.DB, userId model.UserId, begin uint, end uint) ([]*repository.BlogOverviewData, error) {
 	return gateway.NewBlogGateway(db.Client, &db.Ctx).FindByUserId(userId, begin, end)
 }
 
@@ -100,15 +101,21 @@ func TestFindByUserId(t *testing.T) {
 		if err != nil {
 			t.Errorf(err.Error())
 		}
-		for i, v := range blogs {
+		for i, blog := range blogs {
 			log.Println("blog", i, ":")
-			log.Print(v)
+			log.Println("- blog_id:", blog.BlogId)
+			log.Println("- abstract:", blog.Abstract)
+			log.Println("- writer:", blog.Writer.UserId)
+			log.Println("- tags:")
+			for it, tag := range blog.Tags {
+				log.Println(" - name", it, ":", tag.TagName)
+			}
 		}
 	}
 }
 
 /* find by user_id & tag_name */
-func findByTagName(db *db.DB, tagName model.TagName, begin uint, end uint) ([]*model.Blog, error) {
+func findByTagName(db *db.DB, tagName model.TagName, begin uint, end uint) ([]*repository.BlogOverviewData, error) {
 	return gateway.NewBlogGateway(db.Client, &db.Ctx).FindByTagName(tagName, begin, end)
 }
 
@@ -142,15 +149,21 @@ func TestFindByTagName(t *testing.T) {
 		if err != nil {
 			t.Errorf(err.Error())
 		}
-		for i, v := range blogs {
+		for i, blog := range blogs {
 			log.Println("blog", i, ":")
-			log.Print(v)
+			log.Println("- blog_id:", blog.BlogId)
+			log.Println("- abstract:", blog.Abstract)
+			log.Println("- writer:", blog.Writer.UserId)
+			log.Println("- tags:")
+			for it, tag := range blog.Tags {
+				log.Println(" - name", it, ":", tag.TagName)
+			}
 		}
 	}
 }
 
 /* find by user_id & tag_name */
-func findByUserIdAndTagName(db *db.DB, userId model.UserId, tagName model.TagName, begin uint, end uint) ([]*model.Blog, error) {
+func findByUserIdAndTagName(db *db.DB, userId model.UserId, tagName model.TagName, begin uint, end uint) ([]*repository.BlogOverviewData, error) {
 	return gateway.NewBlogGateway(db.Client, &db.Ctx).FindByUserIdAndTagName(userId, tagName, begin, end)
 }
 
@@ -187,9 +200,15 @@ func TestFindByUserIdAndTagName(t *testing.T) {
 		if err != nil {
 			t.Errorf(err.Error())
 		}
-		for i, v := range blogs {
+		for i, blog := range blogs {
 			log.Println("blog", i, ":")
-			log.Print(v)
+			log.Println("- blog_id:", blog.BlogId)
+			log.Println("- abstract:", blog.Abstract)
+			log.Println("- writer:", blog.Writer.UserId)
+			log.Println("- tags:")
+			for it, tag := range blog.Tags {
+				log.Println(" - name", it, ":", tag.TagName)
+			}
 		}
 	}
 }
