@@ -207,6 +207,25 @@ func (b *BlogInteractor) Update(request *BlogUpdateRequest) error {
 		return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
 	}
 
+	var tagNames []model.TagName
+	for _, tag := range request.Tags {
+		tagName, err := model.NewTagName(tag)
+		if err != nil {
+			return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
+		}
+		tagNames = append(tagNames, tagName)
+
+		// タグが未登録なら登録
+		tag := model.NewTag(
+			tagName,
+			model.TagIcon(""),
+			model.TagStatus(0),
+			time.Now(),
+			time.Now(),
+		)
+		b.TagRepo.Register(tag)
+	}
+
 	/* find blog by id */
 	exists, blog, err := b.BlogRepo.FindById(blogId)
 	if !exists {
@@ -218,7 +237,13 @@ func (b *BlogInteractor) Update(request *BlogUpdateRequest) error {
 
 	/* update blog & save */
 	blog.Blog.Update(content, title, abstract, evaluation)
-	blog, err = b.BlogRepo.Update(blog.Blog)
+	err = b.BlogRepo.Update(blog.Blog)
+	if err != nil {
+		return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
+	}
+
+	/* update tags */
+	err = b.BlogRepo.UpdateTags(blogId, tagNames)
 	if err != nil {
 		return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
 	}
@@ -243,42 +268,30 @@ func (b *BlogInteractor) Register(request *BlogRegisterRequest) error {
 		return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
 	}
 
-	log.Println("user_id:", userId)
-
 	content, err := model.NewBlogContent(request.Content)
 	if err != nil {
 		return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
 	}
-
-	log.Println("content:", content)
 
 	title, err := model.NewBlogTitle(request.Title)
 	if err != nil {
 		return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
 	}
 
-	log.Println("title:", title)
-
 	abstract, err := model.NewBlogAbstract(request.Abstract)
 	if err != nil {
 		return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
 	}
-
-	log.Println("abstract:", abstract)
 
 	evaluation, err := model.NewBlogEvaluation(request.Evaluation)
 	if err != nil {
 		return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
 	}
 
-	log.Println("evaluation:", evaluation)
-
 	status, err := model.NewBlogStatus(request.Status)
 	if err != nil {
 		return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
 	}
-
-	log.Println("status:", status)
 
 	var tagNames []model.TagName
 	for _, tag := range request.Tags {
@@ -299,8 +312,6 @@ func (b *BlogInteractor) Register(request *BlogRegisterRequest) error {
 		b.TagRepo.Register(tag)
 	}
 
-	log.Println("tags:", tagNames)
-
 	/* gen blog_id */
 	id, err := b.service().GenULID()
 	if err != nil {
@@ -312,16 +323,12 @@ func (b *BlogInteractor) Register(request *BlogRegisterRequest) error {
 		return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
 	}
 
-	log.Println("blog_id:", blogId)
-
 	/* create blog & save */
 	blog := model.NewBlog(blogId, userId, content, title, abstract, evaluation, status, time.Now(), time.Now())
 	err = b.BlogRepo.Register(blog)
 	if err != nil {
 		return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
 	}
-
-	log.Println("blog:", blog)
 
 	/* register tags info */
 	err = b.BlogRepo.RegisterTags(blogId, tagNames)
@@ -336,4 +343,14 @@ func (b *BlogInteractor) Register(request *BlogRegisterRequest) error {
 /* create blog service */
 func (b *BlogInteractor) service() *service.Blog {
 	return &service.Blog{}
+}
+
+/* model.TagName[] contains model.TagName ?*/
+func (b *BlogInteractor) contain(tags []*model.Tag, target model.TagName) bool {
+	for _, tag := range tags {
+		if tag.TagName == target {
+			return true
+		}
+	}
+	return false
 }

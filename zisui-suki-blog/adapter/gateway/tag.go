@@ -23,6 +23,20 @@ func NewTagGateway(
 	}
 }
 
+func (g *TagGateway) Exists(tagName model.TagName) (bool, error) {
+	count, err := g.client.Debug().Tag.Query().
+		Where(tag.IDEQ(string(tagName))).
+		Count(*g.context)
+	if err != nil {
+		return false, err
+	}
+	if count <= 0 {
+		return false, nil
+	} else {
+		return true, nil
+	}
+}
+
 func (g *TagGateway) Register(tag *model.Tag) error {
 	_, err := g.client.Debug().Tag.Create().
 		SetID(string(tag.TagName)).

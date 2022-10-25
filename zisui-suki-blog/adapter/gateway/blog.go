@@ -52,10 +52,10 @@ func (g *BlogGateway) FindById(blogId model.BlogId) (bool, *repository.BlogData,
 	for _, tag := range blog.Edges.Tags {
 		tags = append(tags, model.NewTag(
 			model.TagName(tag.ID),
-				model.TagIcon(tag.Icon),
-				model.TagStatus(tag.Status),
-				tag.CreatedAt,
-				tag.UpdatedAt,
+			model.TagIcon(tag.Icon),
+			model.TagStatus(tag.Status),
+			tag.CreatedAt,
+			tag.UpdatedAt,
 		))
 	}
 
@@ -252,12 +252,36 @@ func (g *BlogGateway) RegisterTags(blogId model.BlogId, tagNames []model.TagName
 		Where(blog.IDEQ(string(blogId))).
 		AddTagIDs(tagNameStrings...).
 		Save(*g.Context)
-
 	return err
 }
 
-func (g *BlogGateway) Update(blog *model.Blog) (*repository.BlogData, error) {
-	return &repository.BlogData{}, nil
+func (g *BlogGateway) Update(blog *model.Blog) error {
+	/* save */
+	_, err := g.Client.Debug().Blog.
+		UpdateOneID(string(blog.BlogId)).
+		SetAbstract(string(blog.Abstract)).
+		SetContent(string(blog.Content)).
+		SetTitle(string(blog.Title)).
+		SetEvaluation(uint(blog.Evaluation)).
+		Save(*g.Context)
+	return err
+}
+
+func (g *BlogGateway) UpdateTags(blogId model.BlogId, updatingTagNames []model.TagName) error {
+	/* tagNames ([]model.TagName) -> tagNameStrings ([]string) */
+	var updatingTagNameStrings []string
+	for _, v := range updatingTagNames {
+		updatingTagNameStrings = append(updatingTagNameStrings, string(v))
+	}
+
+	/* delete */
+	err := g.Client.Debug().Blog.UpdateOneID(string(blogId)).ClearTags().Exec(*g.Context)
+	if err != nil {
+		return err
+	}
+
+	/* save */
+	return g.RegisterTags(blogId, updatingTagNames)
 }
 
 func (g *BlogGateway) Delete(blog *model.Blog) error {

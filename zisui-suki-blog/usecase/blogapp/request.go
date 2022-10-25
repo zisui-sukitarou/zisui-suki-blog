@@ -29,11 +29,12 @@ type BlogDeleteRequest struct {
 }
 
 type BlogUpdateRequest struct {
-	BlogId     string `json:"blog_id"`
-	Content    string `json:"content"`
-	Abstract   string `json:"abstract"`
-	Title      string `json:"title"`
-	Evaluation uint   `json:"evaluation"`
+	BlogId     string   `json:"blog_id"`
+	Content    string   `json:"content"`
+	Abstract   string   `json:"abstract"`
+	Title      string   `json:"title"`
+	Evaluation uint     `json:"evaluation"`
+	Tags       []string `json:"tags"`
 }
 
 type BlogRegisterRequest struct {

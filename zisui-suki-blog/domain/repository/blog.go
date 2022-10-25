@@ -15,7 +15,8 @@ type BlogRepository interface {
 	FindByUserIdAndTagName(userId model.UserId, tagName model.TagName, begin uint, end uint) ([]*BlogData, error) // Blog.Content は空文字列
 	Register(*model.Blog) error
 	RegisterTags(model.BlogId, []model.TagName) error
-	Update(*model.Blog) (*BlogData, error)
+	Update(*model.Blog) error
+	UpdateTags(model.BlogId, []model.TagName) error
 	Delete(*model.Blog) error
 }
 
@@ -23,8 +24,8 @@ type BlogRepository interface {
 * writre の情報はこのデータベースにはない
  */
 type BlogData struct {
-	Blog   *model.Blog
-	Tags   []*model.Tag
+	Blog *model.Blog
+	Tags []*model.Tag
 }
 
 func NewBlogData(
@@ -32,7 +33,7 @@ func NewBlogData(
 	tags []*model.Tag,
 ) *BlogData {
 	return &BlogData{
-		Blog:   blog,
-		Tags:   tags,
+		Blog: blog,
+		Tags: tags,
 	}
 }

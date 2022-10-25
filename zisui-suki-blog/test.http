@@ -60,4 +60,4 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMDFHR
 accept: application/json
 Content-Type: application/json
 
-{"blog_id": "01GG6SPB7M2ZY2RYCAPENXX02C", "content":"# キノコのパスタ", "title":"きのこの和風パスタ", "abstract":"エリンギと舞茸を使ったパスタ", "evaluation": 6, "status":0, "tags":["パスタ", "和風"]}
+{"blog_id": "01GG6SPB7M2ZY2RYCAPENXX02C", "content":"# キノコのパスタ", "title":"きのこの和風パスタ", "abstract":"エリンギと舞茸を使ったパスタ", "evaluation": 4, "status":0, "tags":[]}
