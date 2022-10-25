@@ -1,0 +1,63 @@
+POST http://localhost:3002/register
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMDFHRzRFQlZHQ0Y2WkM1TkU5MUtGWjZQSDUifQ.KhVnae0iF7uLZWPxfAcC3aIzlAmkiO4jMMTrFb3OgcQ
+accept: application/json
+Content-Type: application/json
+
+{"content":"# キノコのパスタ", "title":"きのこの和風パスタ", "abstract":"エリンギとしめじを使ったパスタ", "evaluation": 7, "status":0, "tags":["パスタ", "和風"]}
+
+###
+
+GET http://localhost:3002/find/by/id
+accept: application/json
+Content-Type: application/json
+
+{"blog_id": "01GG5HVAJY1VV84DFFT083EQ8C"}
+
+###
+
+GET http://localhost:3002/find/by/tag
+accept: application/json
+Content-Type: application/json
+
+{"tag_name": "パスタ", "begin": 0, "end": 10}
+
+###
+
+GET http://localhost:3002/find/by/tag
+accept: application/json
+Content-Type: application/json
+
+{"tag_name": "パスタ", "begin": 0, "end": 10}
+
+###
+
+GET http://localhost:3002/find/by/user
+accept: application/json
+Content-Type: application/json
+
+{"user_id": "01GG4EBVGCF6ZC5NE91KFZ6PH5", "begin": 0, "end": 10}
+
+###
+
+GET http://localhost:3002/find/by/tag/user
+accept: application/json
+Content-Type: application/json
+
+{"tag_name": "和風", "user_id": "01GG4EBVGCF6ZC5NE91KFZ6PH5", "begin": 0, "end": 10}
+
+###
+
+GET http://localhost:3002/find/by/tag/user
+accept: application/json
+Content-Type: application/json
+
+{"tag_name": "和風", "user_id": "01GG4EBVGCF6ZC5NE91KFZ6PH5", "begin": 0, "end": 10}
+
+###
+
+POST http://localhost:3002/update
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMDFHRzRFQlZHQ0Y2WkM1TkU5MUtGWjZQSDUifQ.KhVnae0iF7uLZWPxfAcC3aIzlAmkiO4jMMTrFb3OgcQ
+accept: application/json
+Content-Type: application/json
+
+{"blog_id": "01GG6SPB7M2ZY2RYCAPENXX02C", "content":"# キノコのパスタ", "title":"きのこの和風パスタ", "abstract":"エリンギと舞茸を使ったパスタ", "evaluation": 6, "status":0, "tags":["パスタ", "和風"]}
