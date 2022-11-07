@@ -11,9 +11,9 @@ type BlogFindByTagRequest struct {
 }
 
 type BlogFindByUserIdRequest struct {
-	UserId string `json:"user_id"`
-	Begin  uint   `json:"begin"`
-	End    uint   `json:"end"`
+	UserId string `query:"user_id"`
+	Begin  uint   `query:"begin"`
+	End    uint   `query:"end"`
 }
 
 type BlogFindByUserIdAndTagRequest struct {

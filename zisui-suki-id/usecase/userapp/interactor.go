@@ -54,7 +54,11 @@ func (u *UserInteractor) Login(request *UserLoginRequest) error {
 	/* is password correct ? */
 	ok, err := u.service().IsConfigured(user.Password, rawPassword)
 	if err != nil {
-		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
+		return u.OutputPort.Login(NewLoginResponse(
+			status.InvalidPassword(),
+			"",
+			&model.User{},
+		))
 	}
 	if !ok {
 		return u.OutputPort.Login(NewLoginResponse(

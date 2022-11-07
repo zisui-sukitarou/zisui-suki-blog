@@ -1,0 +1,18 @@
+POST http://localhost:3001/login
+accept: application/json
+Content-Type: application/json
+
+{"name": "zisui-sukitarou", "password": "passw0rd"}
+
+###
+
+GET http://localhost:3001/find/by/id
+accept: application/json
+Content-Type: application/json
+
+{"user_id": "01GG4EBVGCF6ZC5NE91KFZ6PH5"}
+
+###
+
+GET http://localhost:3001/find/by/token
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMDFHRzRFQlZHQ0Y2WkM1TkU5MUtGWjZQSDUifQ.KhVnae0iF7uLZWPxfAcC3aIzlAmkiO4jMMTrFb3OgcQ

@@ -2,6 +2,8 @@ package controller
 
 import (
 	"context"
+	"log"
+	"strconv"
 	"zisui-suki-blog/adapter/gateway"
 	"zisui-suki-blog/adapter/presenter"
 	"zisui-suki-blog/ent"
@@ -91,11 +93,22 @@ func (b *BlogController) FindByTagName(ctx *context.Context) func(c echo.Context
 func (b *BlogController) FindByUserId(ctx *context.Context) func(c echo.Context) error {
 	return func(c echo.Context) error {
 		/* get request parameters */
-		request := &blogapp.BlogFindByUserIdRequest{}
-		err := c.Bind(&request)
+		userId := c.QueryParam("user_id")
+		begin, err := strconv.Atoi(c.QueryParam("begin"))
 		if err != nil {
 			return err
 		}
+		end, err := strconv.Atoi(c.QueryParam("end"))
+		if err != nil {
+			return err
+		}
+
+		request := &blogapp.BlogFindByUserIdRequest{
+			UserId: userId,
+			Begin: uint(begin),
+			End: uint(end),
+		}
+		log.Println("request:", request)
 
 		/* return response */
 		return b.inputPort(c, ctx).FindByUserId(request)

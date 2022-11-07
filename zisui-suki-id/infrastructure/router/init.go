@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"zisui-suki-blog/adapter/controller"
 	"zisui-suki-blog/infrastructure/db"
 
@@ -29,6 +30,12 @@ func Init() (*echo.Echo, error) {
 	find := e.Group("/find")
 	find.GET("/by/id", user.FindById(&ctx))
 	find.GET("/by/name", user.FindByName(&ctx))
+
+	findByToken := e.Group("/find/by/token")
+	findByToken.Use(middleware.JWTWithConfig(newConfig()))
+	findByToken.GET("", user.FindByToken(&ctx))
+
+	log.Println("infra: router init")
 
 	return e, nil
 }

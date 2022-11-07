@@ -7,6 +7,7 @@ import (
 	"zisui-suki-blog/ent"
 	"zisui-suki-blog/usecase/userapp"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
 )
 
@@ -45,6 +46,21 @@ func (u *UserController) SignUp(ctx *context.Context) func(c echo.Context) error
 
 		/* return response */
 		return u.inputPort(c, ctx).SignUp(request)
+	}
+}
+
+func (u *UserController) FindByToken(ctx *context.Context) func(c echo.Context) error {
+	return func(c echo.Context) error {
+		/* get user_id from token */
+		register := c.Get("user").(*jwt.Token)
+		claims := register.Claims.(jwt.MapClaims)
+		userId := claims["user_id"].(string)
+		request := userapp.UserFindByIdRequest{
+			UserId: userId,
+		}
+
+		/* return response */
+		return u.inputPort(c, ctx).FindById(&request)
 	}
 }
 

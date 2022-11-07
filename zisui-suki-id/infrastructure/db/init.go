@@ -1,6 +1,7 @@
 package db
 
 import (
+	"log"
 	"zisui-suki-blog/ent"
 
 	"entgo.io/ent/dialect/sql"
@@ -9,6 +10,7 @@ import (
 )
 
 func Init() (*ent.Client, error) {
+	log.Println("infra: db init")
 	return open()
 }
 

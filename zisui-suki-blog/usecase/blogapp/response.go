@@ -7,28 +7,28 @@ import (
 )
 
 type WriterInfo struct {
-	UserId      string `json:"user_id"`
+	UserId      string `json:"userId"`
 	Name        string `json:"name"`
-	DisplayName string `json:"display_name"`
+	DisplayName string `json:"displayName"`
 	Email       string `json:"email"`
 	Icon        string `json:"icon"`
 }
 
 type TagInfo struct {
-	TagName string `json:"tags_name"`
+	TagName string `json:"tagsName"`
 	Icon    string `json:"icon"`
 }
 
 /*** Full Response ***/
 type BlogResponse struct {
-	BlogId     string      `json:"blog_id"`
+	BlogId     string      `json:"blogId"`
 	Content    string      `json:"content"`
 	Title      string      `json:"title"`
 	Abstract   string      `json:"abstract"`
 	Evaluation uint        `json:"evaluation"`
 	Status     uint        `json:"status"`
-	CreatedAt  time.Time   `json:"created_at"`
-	UpdatedAt  time.Time   `json:"updated_at"`
+	CreatedAt  time.Time   `json:"createdAt"`
+	UpdatedAt  time.Time   `json:"updatedAt"`
 	Writer     *WriterInfo `json:"writer"`
 	Tags       []*TagInfo  `json:"tags"`
 }
@@ -66,13 +66,13 @@ func NewBlogResponse(b *repository.BlogData, u *model.User) *BlogResponse {
 
 /*** BlogReponse without Content ***/
 type BlogOverviewResponse struct {
-	BlogId     string      `json:"blog_id"`
+	BlogId     string      `json:"blogId"`
 	Title      string      `json:"title"`
 	Abstract   string      `json:"abstract"`
 	Evaluation uint        `json:"evaluation"`
 	Status     uint        `json:"status"`
-	CreatedAt  time.Time   `json:"created_at"`
-	UpdatedAt  time.Time   `json:"updated_at"`
+	CreatedAt  time.Time   `json:"createdAt"`
+	UpdatedAt  time.Time   `json:"updatedAt"`
 	Writer     *WriterInfo `json:"writer"`
 	Tags       []*TagInfo  `json:"tags"`
 }

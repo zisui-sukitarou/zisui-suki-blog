@@ -4,9 +4,9 @@ import "zisui-suki-blog/domain/model"
 
 /* return user info */
 type UserResponse struct {
-	UserId      string `json:"user_id"`
+	UserId      string `json:"userId"`
 	Name        string `json:"name"`
-	DisplayName string `json:"display_name"`
+	DisplayName string `json:"displayName"`
 	Email       string `json:"email"`
 	Icon        string `json:"icon"`
 	Status      uint   `json:"status"`
@@ -27,7 +27,7 @@ func NewUserResponse(u *model.User) *UserResponse {
 type SignUpResponse struct {
 	Status   uint          `json:"status"`
 	JWT      string        `json:"token"`
-	UserInfo *UserResponse `json:"user_info"`
+	UserInfo *UserResponse `json:"userInfo"`
 }
 
 func NewSignUpResponse(
@@ -46,7 +46,7 @@ func NewSignUpResponse(
 type LoginResponse struct {
 	Status   uint          `json:"status"`
 	JWT      string        `json:"token"`
-	UserInfo *UserResponse `json:"user_info"`
+	UserInfo *UserResponse `json:"userInfo"`
 }
 
 func NewLoginResponse(
@@ -64,7 +64,7 @@ func NewLoginResponse(
 /* */
 type UpdateResponse struct {
 	Status   uint          `json:"status"`
-	UserInfo *UserResponse `json:"user_info"`
+	UserInfo *UserResponse `json:"userInfo"`
 }
 
 func NewUpdateResponse(
@@ -80,7 +80,7 @@ func NewUpdateResponse(
 /* */
 type UpdatePasswordResponse struct {
 	Status   uint          `json:"status"`
-	UserInfo *UserResponse `json:"user_info"`
+	UserInfo *UserResponse `json:"userInfo"`
 }
 
 func NewUpdatePasswordResponse(
