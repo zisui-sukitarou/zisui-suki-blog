@@ -342,6 +342,11 @@ func (b *BlogInteractor) Update(request *BlogUpdateRequest) error {
 
 func (b *BlogInteractor) Register(request *BlogRegisterRequest) error {
 	/* input data -> model object */
+	blogId, err := model.NewBlogId(request.BlogId)
+	if err != nil {
+		return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
+	}
+
 	userId, err := model.NewUserId(request.UserId)
 	if err != nil {
 		return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
@@ -389,17 +394,6 @@ func (b *BlogInteractor) Register(request *BlogRegisterRequest) error {
 			time.Now(),
 		)
 		b.TagRepo.Register(tag)
-	}
-
-	/* gen blog_id */
-	id, err := b.service().GenULID()
-	if err != nil {
-		return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
-	}
-
-	blogId, err := model.NewBlogId(id.String())
-	if err != nil {
-		return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
 	}
 
 	/* create blog & save */

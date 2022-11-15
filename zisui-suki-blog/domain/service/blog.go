@@ -1,21 +1,11 @@
 package service
 
 import (
-	"math/rand"
-	"time"
 	"zisui-suki-blog/domain/model"
 	"zisui-suki-blog/domain/repository"
-
-	"github.com/oklog/ulid/v2"
 )
 
 type Blog struct{}
-
-func (b *Blog) GenULID() (ulid.ULID, error) {
-	entropy := rand.New(rand.NewSource(time.Now().UnixNano()))
-	ms := ulid.Timestamp(time.Now())
-	return ulid.New(ms, entropy)
-}
 
 func (b *Blog) Exists(blogId model.BlogId, repository repository.BlogRepository) (bool, error) {
 	exists, _, err := repository.FindById(blogId)

@@ -18,8 +18,8 @@ type BlogFindByUserIdRequest struct {
 
 type BlogFindByUserNameRequest struct {
 	UserName string `query:"userName"`
-	Begin  uint   `query:"begin"`
-	End    uint   `query:"end"`
+	Begin    uint   `query:"begin"`
+	End      uint   `query:"end"`
 }
 
 type BlogFindByUserIdAndTagRequest struct {
@@ -30,10 +30,10 @@ type BlogFindByUserIdAndTagRequest struct {
 }
 
 type BlogFindByUserNameAndTagRequest struct {
-	TagName string `json:"tagName"`
-	UserName  string `json:"userName"`
-	Begin   uint   `json:"begin"`
-	End     uint   `json:"end"`
+	TagName  string `json:"tagName"`
+	UserName string `json:"userName"`
+	Begin    uint   `json:"begin"`
+	End      uint   `json:"end"`
 }
 
 type BlogDeleteRequest struct {
@@ -51,6 +51,7 @@ type BlogUpdateRequest struct {
 }
 
 type BlogRegisterRequest struct {
+	BlogId     string   `json:"blogId"`
 	UserId     string   `json:"userId"`
 	Content    string   `json:"content"`
 	Title      string   `json:"title"`
