@@ -1,32 +1,31 @@
-import type { NextApiRequest as Req, NextApiResponse as Res } from "next";
+import type { NextApiRequest as Req, NextApiResponse as Res } from "next"
 import { parseCookies, setCookie, destroyCookie } from "nookies"
-import { json } from "stream/consumers";
-import { zisuiSukiIdBaseUrl } from "../../../const/config";
-import { idResponseStatus } from "../../../const/status";
-import { CurrentUser } from "../../../types/user";
+import { json } from "stream/consumers"
+import { zisuiSukiIdBaseUrl } from "../../../consts/config"
+import { userError } from "../../../domain/user/errors"
 
 const handler = async (req: Req, res: Res<{
-    status: number | null, 
+    error: number, 
     userData: CurrentUser | null
 }>) => {
     /* "POST"以外は、"404 Not Found"を返す */
     if (req.method !== "POST") {
         return res.status(404).send({
-            status: null,
+            error: userError.ServerError,
             userData: null,
         });
     }
     
-    const {status, token, userData} = await requestLogin(req.body.name, req.body.password)
-    if (status !== idResponseStatus.OK) {
+    const {error, token, userData} = await requestLogin(req.body.name, req.body.password)
+    if (error !== userError.OK) {
         return res.status(200).send({
-            status: status,
+            error: error,
             userData: null,
         })
     }
 
     /* set in cookie */
-    const expiresIn = 60 * 1; // 1 minutes
+    const expiresIn = 60 * 10; // 10 minutes
     const options = {
         maxAge: expiresIn,
         httpOnly: true,
@@ -47,13 +46,13 @@ const handler = async (req: Req, res: Res<{
 
     /* response */
     return res.send({ 
-        status: status,
+        error: error,
         userData: userData,
     })
 }
 
 const requestLogin = async (name: string, password: string): Promise<{
-    status: number | null,
+    error: number,
     token: string | null,
     userData: CurrentUser | null,
 }> => {
@@ -69,12 +68,12 @@ const requestLogin = async (name: string, password: string): Promise<{
         }),
     })
     if (response.status != 200) {
-        return {status: null, token: null, userData: null}
+        return {error: userError.ServerError, token: null, userData: null}
     }
 
     const jsonData = await response.json()
     return {
-        status: jsonData.status,
+        error: jsonData.status,
         token: jsonData.token,
         userData: jsonData.userInfo,
     }

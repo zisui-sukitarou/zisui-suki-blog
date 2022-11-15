@@ -1,15 +1,20 @@
 package userapp
 
-import "zisui-suki-blog/domain/model"
+import (
+	"time"
+	"zisui-suki-blog/domain/model"
+)
 
 /* return user info */
 type UserResponse struct {
-	UserId      string `json:"userId"`
-	Name        string `json:"name"`
-	DisplayName string `json:"displayName"`
-	Email       string `json:"email"`
-	Icon        string `json:"icon"`
-	Status      uint   `json:"status"`
+	UserId      string    `json:"userId"`
+	Name        string    `json:"name"`
+	DisplayName string    `json:"displayName"`
+	Email       string    `json:"email"`
+	Icon        string    `json:"icon"`
+	Status      uint      `json:"status"`
+	CreatedAt   time.Time `json:"createdAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
 }
 
 func NewUserResponse(u *model.User) *UserResponse {
@@ -20,6 +25,8 @@ func NewUserResponse(u *model.User) *UserResponse {
 		Email:       string(u.Email),
 		Icon:        string(u.Icon),
 		Status:      uint(u.Status),
+		CreatedAt:   u.CreatedAt,
+		UpdatedAt:   u.UpdatedAt,
 	}
 }
 

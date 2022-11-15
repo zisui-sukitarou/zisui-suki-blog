@@ -1,6 +1,5 @@
 import { parseCookies, setCookie, destroyCookie } from 'nookies'
-import { baseUrl } from '../const/config'
-import { CurrentUser } from '../types/user'
+import { baseUrl } from '../consts/config'
 
 export const fetchCurrentUser = async (): Promise<CurrentUser | null> => {
     const response = await fetch(baseUrl + "/api/user")

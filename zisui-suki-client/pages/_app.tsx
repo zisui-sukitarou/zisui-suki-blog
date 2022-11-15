@@ -5,7 +5,7 @@ import { currentUserState } from '../stores/currentUser';
 import { useEffect } from 'react';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { fetchCurrentUser } from '../utils/fetchCurrentUser';
-import { CurrentUser } from '../types/user';
+
 
 /* recoil の atom にログイン済みユーザ情報をセット */
 const AppInit = (): null => {

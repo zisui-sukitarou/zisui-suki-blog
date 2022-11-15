@@ -1,6 +1,6 @@
 import type { NextApiRequest as Req, NextApiResponse as Res } from "next";
 import { parseCookies, setCookie, destroyCookie } from "nookies"
-import { zisuiSukiIdBaseUrl } from "../../../../../const/config";
+import { zisuiSukiIdBaseUrl } from "../../../../../consts/config";
 
 const handler = async (req: Req, res: Res) => {
     const cookies = parseCookies({ req })

@@ -32,7 +32,15 @@ func (b *BlogPresenter) FindByUserId(response []*blogapp.BlogOverviewResponse) e
 	return b.c.JSON(http.StatusOK, response)
 }
 
+func (b *BlogPresenter) FindByUserName(response []*blogapp.BlogOverviewResponse) error {
+	return b.c.JSON(http.StatusOK, response)
+}
+
 func (b *BlogPresenter) FindByUserIdAndTagName(response []*blogapp.BlogOverviewResponse) error {
+	return b.c.JSON(http.StatusOK, response)
+}
+
+func (b *BlogPresenter) FindByUserNameAndTagName(response []*blogapp.BlogOverviewResponse) error {
 	return b.c.JSON(http.StatusOK, response)
 }
 

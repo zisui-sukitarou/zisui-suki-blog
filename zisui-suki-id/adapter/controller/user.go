@@ -54,7 +54,7 @@ func (u *UserController) FindByToken(ctx *context.Context) func(c echo.Context) 
 		/* get user_id from token */
 		register := c.Get("user").(*jwt.Token)
 		claims := register.Claims.(jwt.MapClaims)
-		userId := claims["user_id"].(string)
+		userId := claims["userId"].(string)
 		request := userapp.UserFindByIdRequest{
 			UserId: userId,
 		}
@@ -67,10 +67,9 @@ func (u *UserController) FindByToken(ctx *context.Context) func(c echo.Context) 
 func (u *UserController) FindById(ctx *context.Context) func(c echo.Context) error {
 	return func(c echo.Context) error {
 		/* get request parameters */
-		request := &userapp.UserFindByIdRequest{}
-		err := c.Bind(request)
-		if err != nil {
-			return err
+		userId := c.QueryParam("userId")
+		request := &userapp.UserFindByIdRequest{
+			UserId: userId,
 		}
 
 		/* return response */
@@ -81,10 +80,9 @@ func (u *UserController) FindById(ctx *context.Context) func(c echo.Context) err
 func (u *UserController) FindByName(ctx *context.Context) func(c echo.Context) error {
 	return func(c echo.Context) error {
 		/* get request parameters */
-		request := &userapp.UserFindByNameRequest{}
-		err := c.Bind(request)
-		if err != nil {
-			return err
+		name := c.QueryParam("name")
+		request := &userapp.UserFindByNameRequest{
+			Name: name,
 		}
 
 		/* return response */

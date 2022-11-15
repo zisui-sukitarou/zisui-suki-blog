@@ -1,4 +1,4 @@
-export interface CurrentUser {
+type User = {
     userId: string
     name: string
     displayName: string

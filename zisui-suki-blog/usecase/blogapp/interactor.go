@@ -93,6 +93,43 @@ func (b *BlogInteractor) FindByUserId(request *BlogFindByUserIdRequest) error {
 	return b.OutputPort.FindByUserId(response)
 }
 
+func (b *BlogInteractor) FindByUserName(request *BlogFindByUserNameRequest) error {
+	/* input data -> model object */
+	userName, err := model.NewUserName(request.UserName)
+	if err != nil {
+		return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
+	}
+
+	/* userName -> userId */
+	exists, user, err := b.UserRepo.FindByUserName(userName)
+	if !exists || err != nil {
+		return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
+	}
+
+	/* find by user id */
+	blogs, err := b.BlogRepo.FindByUserId(user.UserId, request.Begin, request.End)
+	if err != nil {
+		return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
+	}
+
+	var response []*BlogOverviewResponse
+	for _, blog := range blogs {
+		/* find user by user_id */
+		exists, user, err := b.UserRepo.FindById(blog.Blog.UserId)
+		if !exists {
+			return b.OutputPort.RespondErorr(apperr.NewErrorResponse(errors.New("user of the id dosen't exist")))
+		}
+		if err != nil {
+			return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
+		}
+
+		response = append(response, NewBlogOverviewResponse(blog, user))
+	}
+
+	/* response */
+	return b.OutputPort.FindByUserName(response)
+}
+
 func (b *BlogInteractor) FindByTagName(request *BlogFindByTagRequest) error {
 	/* input data -> model object */
 	tagName, err := model.NewTagName(request.TagName)
@@ -158,6 +195,48 @@ func (b *BlogInteractor) FindByUserIdAndTagName(request *BlogFindByUserIdAndTagR
 
 	/* response */
 	return b.OutputPort.FindByUserIdAndTagName(response)
+}
+
+func (b *BlogInteractor) FindByUserNameAndTagName(request *BlogFindByUserNameAndTagRequest) error {
+	/* input data -> model object */
+	userName, err := model.NewUserName(request.UserName)
+	if err != nil {
+		return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
+	}
+
+	tagName, err := model.NewTagName(request.TagName)
+	if err != nil {
+		return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
+	}
+
+	/* userName -> userId */
+	exists, user, err := b.UserRepo.FindByUserName(userName)
+	if !exists || err != nil {
+		return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
+	}
+
+	/* find by user id */
+	blogs, err := b.BlogRepo.FindByUserIdAndTagName(user.UserId, tagName, request.Begin, request.End)
+	if err != nil {
+		return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
+	}
+
+	var response []*BlogOverviewResponse
+	for _, blog := range blogs {
+		/* find user by user_id */
+		exists, user, err := b.UserRepo.FindById(blog.Blog.UserId)
+		if !exists {
+			return b.OutputPort.RespondErorr(apperr.NewErrorResponse(errors.New("user of the id dosen't exist")))
+		}
+		if err != nil {
+			return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
+		}
+
+		response = append(response, NewBlogOverviewResponse(blog, user))
+	}
+
+	/* response */
+	return b.OutputPort.FindByUserNameAndTagName(response)
 }
 
 func (b *BlogInteractor) Delete(request *BlogDeleteRequest) error {

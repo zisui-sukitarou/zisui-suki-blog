@@ -32,8 +32,10 @@ func Init() (*echo.Echo, error) {
 	find := e.Group("/find")
 	find.GET("/by/id", blog.FindById(&ctx))
 	find.GET("/by/tag", blog.FindByTagName(&ctx))
-	find.GET("/by/user", blog.FindByUserId(&ctx))
-	find.GET("/by/tag/user", blog.FindByUserIdAndTagName(&ctx))
+	find.GET("/by/userId", blog.FindByUserId(&ctx))
+	find.GET("/by/tag/userId", blog.FindByUserIdAndTagName(&ctx))
+	find.GET("/by/userName", blog.FindByUserName(&ctx))
+	find.GET("/by/tag/userName", blog.FindByUserNameAndTagName(&ctx))
 
 	register := e.Group("/register")
 	register.Use(middleware.JWTWithConfig(newConfig()))

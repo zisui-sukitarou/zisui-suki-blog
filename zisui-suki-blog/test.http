@@ -7,51 +7,40 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:3002/find/by/id
+GET http://localhost:3002/find/by/id?blogId=01GG5HVAJY1VV84DFFT083EQ8C
 accept: application/json
 Content-Type: application/json
-
-{"blog_id": "01GG5HVAJY1VV84DFFT083EQ8C"}
 
 ###
 
-GET http://localhost:3002/find/by/tag
+GET http://localhost:3002/find/by/tag?tagName=パスタ&begin=0&end=1
 accept: application/json
 Content-Type: application/json
-
-{"tag_name": "パスタ", "begin": 0, "end": 10}
 
 ###
 
-GET http://localhost:3002/find/by/tag
+GET http://localhost:3002/find/by/userId?userId=01GG4EBVGCF6ZC5NE91KFZ6PH5&begin=0&end=10
 accept: application/json
 Content-Type: application/json
-
-{"tag_name": "パスタ", "begin": 0, "end": 10}
 
 ###
 
-GET http://localhost:3002/find/by/user
+GET http://localhost:3002/find/by/userName?userName=zisui-sukitarou&begin=0&end=10
 accept: application/json
 Content-Type: application/json
-
-{"user_id": "01GG4EBVGCF6ZC5NE91KFZ6PH5", "begin": 0, "end": 10}
 
 ###
 
-GET http://localhost:3002/find/by/tag/user
+GET http://localhost:3002/find/by/tag/userId?tagName=パスタ&userId=01GG4EBVGCF6ZC5NE91KFZ6PH5&begin=0&end=10
 accept: application/json
 Content-Type: application/json
-
-{"tag_name": "和風", "user_id": "01GG4EBVGCF6ZC5NE91KFZ6PH5", "begin": 0, "end": 10}
 
 ###
 
-GET http://localhost:3002/find/by/tag/user
+GET http://localhost:3002/find/by/tag/userName?tagName=パスタ&userName=zisui-sukitarou&begin=0&end=10
 accept: application/json
 Content-Type: application/json
 
-{"tag_name": "和風", "user_id": "01GG4EBVGCF6ZC5NE91KFZ6PH5", "begin": 0, "end": 10}
 
 ###
 
@@ -60,4 +49,4 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMDFHR
 accept: application/json
 Content-Type: application/json
 
-{"blog_id": "01GG6SPB7M2ZY2RYCAPENXX02C", "content":"# キノコのパスタ", "title":"きのこの和風パスタ", "abstract":"エリンギと舞茸を使ったパスタ", "evaluation": 4, "status":0, "tags":[]}
+{"blogId": "01GG6SPB7M2ZY2RYCAPENXX02C", "content":"# キノコのパスタ", "title":"きのこの和風パスタ", "abstract":"エリンギと舞茸を使ったパスタ", "evaluation": 4, "status":0, "tags":[]}

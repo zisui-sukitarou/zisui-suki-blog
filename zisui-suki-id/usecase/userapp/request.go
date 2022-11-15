@@ -7,7 +7,7 @@ type UserLoginRequest struct {
 
 type UserSignUpRequest struct {
 	Name        string `json:"name"`
-	DisplayName string `json:"display_name"`
+	DisplayName string `json:"displayName"`
 	Email       string `json:"email"`
 	RawPassword string `json:"password"`
 	Icon        string `json:"icon"`
@@ -15,7 +15,7 @@ type UserSignUpRequest struct {
 }
 
 type UserFindByIdRequest struct {
-	UserId string `json:"user_id"`
+	UserId string `json:"userId"`
 }
 
 type UserFindByNameRequest struct {
@@ -24,15 +24,15 @@ type UserFindByNameRequest struct {
 
 type UserUpdateRequest struct {
 	Name        string `json:"name"`
-	DisplayName string `json:"display_name"`
+	DisplayName string `json:"displayName"`
 	Email       string `json:"email"`
 	Icon        string `json:"icon"`
 }
 
 type UserUpdatePasswordRequest struct {
 	Name        string `json:"name"`
-	OldPassword string `json:"old_password"`
-	NewPassword string `json:"new_password"`
+	OldPassword string `json:"oldPassword"`
+	NewPassword string `json:"newPassword"`
 }
 
 type UserDeleteRequest struct {

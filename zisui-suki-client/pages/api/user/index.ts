@@ -1,7 +1,6 @@
 import type { NextApiRequest as Req, NextApiResponse as Res } from "next";
 import { parseCookies, setCookie, destroyCookie } from "nookies"
 import { currentUserState } from "../../../stores/currentUser";
-import { CurrentUser } from "../../../types/user";
 
 const handler = async (req: Req, res: Res<CurrentUser | null>) => {
     const cookies = parseCookies({ req })

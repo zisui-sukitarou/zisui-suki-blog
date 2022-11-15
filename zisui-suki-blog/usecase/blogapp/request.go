@@ -1,35 +1,48 @@
 package blogapp
 
 type BlogFindByIdRequest struct {
-	BlogId string `json:"blog_id"`
+	BlogId string `json:"blogId"`
 }
 
 type BlogFindByTagRequest struct {
-	TagName string `json:"tag_name"`
+	TagName string `json:"tagName"`
 	Begin   uint   `json:"begin"`
 	End     uint   `json:"end"`
 }
 
 type BlogFindByUserIdRequest struct {
-	UserId string `query:"user_id"`
+	UserId string `query:"userId"`
+	Begin  uint   `query:"begin"`
+	End    uint   `query:"end"`
+}
+
+type BlogFindByUserNameRequest struct {
+	UserName string `query:"userName"`
 	Begin  uint   `query:"begin"`
 	End    uint   `query:"end"`
 }
 
 type BlogFindByUserIdAndTagRequest struct {
-	TagName string `json:"tag_name"`
-	UserId  string `json:"user_id"`
+	TagName string `json:"tagName"`
+	UserId  string `json:"userId"`
+	Begin   uint   `json:"begin"`
+	End     uint   `json:"end"`
+}
+
+type BlogFindByUserNameAndTagRequest struct {
+	TagName string `json:"tagName"`
+	UserName  string `json:"userName"`
 	Begin   uint   `json:"begin"`
 	End     uint   `json:"end"`
 }
 
 type BlogDeleteRequest struct {
-	BlogId string `json:"blog_id"`
-	UserId string `json:"user_id"`
+	BlogId string `json:"blogId"`
+	UserId string `json:"userId"`
 }
 
 type BlogUpdateRequest struct {
-	BlogId     string   `json:"blog_id"`
+	BlogId     string   `json:"blogId"`
 	Content    string   `json:"content"`
 	Abstract   string   `json:"abstract"`
 	Title      string   `json:"title"`
@@ -38,7 +51,7 @@ type BlogUpdateRequest struct {
 }
 
 type BlogRegisterRequest struct {
-	UserId     string   `json:"user_id"`
+	UserId     string   `json:"userId"`
 	Content    string   `json:"content"`
 	Title      string   `json:"title"`
 	Abstract   string   `json:"abstract"`

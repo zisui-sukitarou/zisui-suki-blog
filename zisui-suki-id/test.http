@@ -6,11 +6,16 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:3001/find/by/id
+GET http://localhost:3001/find/by/id?userId=01GG4EBVGCF6ZC5NE91KFZ6PH5
 accept: application/json
 Content-Type: application/json
 
-{"user_id": "01GG4EBVGCF6ZC5NE91KFZ6PH5"}
+
+###
+
+GET http://localhost:3001/find/by/name?name=zisui-sukitarou
+accept: application/json
+Content-Type: application/json
 
 ###
 
