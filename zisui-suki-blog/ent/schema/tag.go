@@ -44,5 +44,7 @@ func (Tag) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("blogs", Blog.Type).
 			Ref("tags"),
+		edge.From("drafts", Draft.Type).
+			Ref("tags"),
 	}
 }

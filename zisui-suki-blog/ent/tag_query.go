@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 	"zisui-suki-blog/ent/blog"
+	"zisui-suki-blog/ent/draft"
 	"zisui-suki-blog/ent/predicate"
 	"zisui-suki-blog/ent/tag"
 
@@ -26,6 +27,7 @@ type TagQuery struct {
 	fields     []string
 	predicates []predicate.Tag
 	withBlogs  *BlogQuery
+	withDrafts *DraftQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -77,6 +79,28 @@ func (tq *TagQuery) QueryBlogs() *BlogQuery {
 			sqlgraph.From(tag.Table, tag.FieldID, selector),
 			sqlgraph.To(blog.Table, blog.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, true, tag.BlogsTable, tag.BlogsPrimaryKey...),
+		)
+		fromU = sqlgraph.SetNeighbors(tq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryDrafts chains the current query on the "drafts" edge.
+func (tq *TagQuery) QueryDrafts() *DraftQuery {
+	query := &DraftQuery{config: tq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := tq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := tq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(tag.Table, tag.FieldID, selector),
+			sqlgraph.To(draft.Table, draft.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, tag.DraftsTable, tag.DraftsPrimaryKey...),
 		)
 		fromU = sqlgraph.SetNeighbors(tq.driver.Dialect(), step)
 		return fromU, nil
@@ -266,6 +290,7 @@ func (tq *TagQuery) Clone() *TagQuery {
 		order:      append([]OrderFunc{}, tq.order...),
 		predicates: append([]predicate.Tag{}, tq.predicates...),
 		withBlogs:  tq.withBlogs.Clone(),
+		withDrafts: tq.withDrafts.Clone(),
 		// clone intermediate query.
 		sql:    tq.sql.Clone(),
 		path:   tq.path,
@@ -281,6 +306,17 @@ func (tq *TagQuery) WithBlogs(opts ...func(*BlogQuery)) *TagQuery {
 		opt(query)
 	}
 	tq.withBlogs = query
+	return tq
+}
+
+// WithDrafts tells the query-builder to eager-load the nodes that are connected to
+// the "drafts" edge. The optional arguments are used to configure the query builder of the edge.
+func (tq *TagQuery) WithDrafts(opts ...func(*DraftQuery)) *TagQuery {
+	query := &DraftQuery{config: tq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	tq.withDrafts = query
 	return tq
 }
 
@@ -352,8 +388,9 @@ func (tq *TagQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Tag, err
 	var (
 		nodes       = []*Tag{}
 		_spec       = tq.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
 			tq.withBlogs != nil,
+			tq.withDrafts != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -378,6 +415,13 @@ func (tq *TagQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Tag, err
 		if err := tq.loadBlogs(ctx, query, nodes,
 			func(n *Tag) { n.Edges.Blogs = []*Blog{} },
 			func(n *Tag, e *Blog) { n.Edges.Blogs = append(n.Edges.Blogs, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := tq.withDrafts; query != nil {
+		if err := tq.loadDrafts(ctx, query, nodes,
+			func(n *Tag) { n.Edges.Drafts = []*Draft{} },
+			func(n *Tag, e *Draft) { n.Edges.Drafts = append(n.Edges.Drafts, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -435,6 +479,64 @@ func (tq *TagQuery) loadBlogs(ctx context.Context, query *BlogQuery, nodes []*Ta
 		nodes, ok := nids[n.ID]
 		if !ok {
 			return fmt.Errorf(`unexpected "blogs" node returned %v`, n.ID)
+		}
+		for kn := range nodes {
+			assign(kn, n)
+		}
+	}
+	return nil
+}
+func (tq *TagQuery) loadDrafts(ctx context.Context, query *DraftQuery, nodes []*Tag, init func(*Tag), assign func(*Tag, *Draft)) error {
+	edgeIDs := make([]driver.Value, len(nodes))
+	byID := make(map[string]*Tag)
+	nids := make(map[string]map[*Tag]struct{})
+	for i, node := range nodes {
+		edgeIDs[i] = node.ID
+		byID[node.ID] = node
+		if init != nil {
+			init(node)
+		}
+	}
+	query.Where(func(s *sql.Selector) {
+		joinT := sql.Table(tag.DraftsTable)
+		s.Join(joinT).On(s.C(draft.FieldID), joinT.C(tag.DraftsPrimaryKey[0]))
+		s.Where(sql.InValues(joinT.C(tag.DraftsPrimaryKey[1]), edgeIDs...))
+		columns := s.SelectedColumns()
+		s.Select(joinT.C(tag.DraftsPrimaryKey[1]))
+		s.AppendSelect(columns...)
+		s.SetDistinct(false)
+	})
+	if err := query.prepareQuery(ctx); err != nil {
+		return err
+	}
+	neighbors, err := query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
+		assign := spec.Assign
+		values := spec.ScanValues
+		spec.ScanValues = func(columns []string) ([]any, error) {
+			values, err := values(columns[1:])
+			if err != nil {
+				return nil, err
+			}
+			return append([]any{new(sql.NullString)}, values...), nil
+		}
+		spec.Assign = func(columns []string, values []any) error {
+			outValue := values[0].(*sql.NullString).String
+			inValue := values[1].(*sql.NullString).String
+			if nids[inValue] == nil {
+				nids[inValue] = map[*Tag]struct{}{byID[outValue]: struct{}{}}
+				return assign(columns[1:], values[1:])
+			}
+			nids[inValue][byID[outValue]] = struct{}{}
+			return nil
+		}
+	})
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected "drafts" node returned %v`, n.ID)
 		}
 		for kn := range nodes {
 			assign(kn, n)

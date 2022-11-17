@@ -428,6 +428,34 @@ func HasBlogsWith(preds ...predicate.Blog) predicate.Tag {
 	})
 }
 
+// HasDrafts applies the HasEdge predicate on the "drafts" edge.
+func HasDrafts() predicate.Tag {
+	return predicate.Tag(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(DraftsTable, DraftFieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, DraftsTable, DraftsPrimaryKey...),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasDraftsWith applies the HasEdge predicate on the "drafts" edge with a given conditions (other predicates).
+func HasDraftsWith(preds ...predicate.Draft) predicate.Tag {
+	return predicate.Tag(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(DraftsInverseTable, DraftFieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, DraftsTable, DraftsPrimaryKey...),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Tag) predicate.Tag {
 	return predicate.Tag(func(s *sql.Selector) {

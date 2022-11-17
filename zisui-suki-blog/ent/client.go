@@ -11,6 +11,7 @@ import (
 	"zisui-suki-blog/ent/migrate"
 
 	"zisui-suki-blog/ent/blog"
+	"zisui-suki-blog/ent/draft"
 	"zisui-suki-blog/ent/tag"
 
 	"entgo.io/ent/dialect"
@@ -25,6 +26,8 @@ type Client struct {
 	Schema *migrate.Schema
 	// Blog is the client for interacting with the Blog builders.
 	Blog *BlogClient
+	// Draft is the client for interacting with the Draft builders.
+	Draft *DraftClient
 	// Tag is the client for interacting with the Tag builders.
 	Tag *TagClient
 }
@@ -41,6 +44,7 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Blog = NewBlogClient(c.config)
+	c.Draft = NewDraftClient(c.config)
 	c.Tag = NewTagClient(c.config)
 }
 
@@ -76,6 +80,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		ctx:    ctx,
 		config: cfg,
 		Blog:   NewBlogClient(cfg),
+		Draft:  NewDraftClient(cfg),
 		Tag:    NewTagClient(cfg),
 	}, nil
 }
@@ -97,6 +102,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		ctx:    ctx,
 		config: cfg,
 		Blog:   NewBlogClient(cfg),
+		Draft:  NewDraftClient(cfg),
 		Tag:    NewTagClient(cfg),
 	}, nil
 }
@@ -127,6 +133,7 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	c.Blog.Use(hooks...)
+	c.Draft.Use(hooks...)
 	c.Tag.Use(hooks...)
 }
 
@@ -236,6 +243,112 @@ func (c *BlogClient) Hooks() []Hook {
 	return c.hooks.Blog
 }
 
+// DraftClient is a client for the Draft schema.
+type DraftClient struct {
+	config
+}
+
+// NewDraftClient returns a client for the Draft from the given config.
+func NewDraftClient(c config) *DraftClient {
+	return &DraftClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `draft.Hooks(f(g(h())))`.
+func (c *DraftClient) Use(hooks ...Hook) {
+	c.hooks.Draft = append(c.hooks.Draft, hooks...)
+}
+
+// Create returns a builder for creating a Draft entity.
+func (c *DraftClient) Create() *DraftCreate {
+	mutation := newDraftMutation(c.config, OpCreate)
+	return &DraftCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Draft entities.
+func (c *DraftClient) CreateBulk(builders ...*DraftCreate) *DraftCreateBulk {
+	return &DraftCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Draft.
+func (c *DraftClient) Update() *DraftUpdate {
+	mutation := newDraftMutation(c.config, OpUpdate)
+	return &DraftUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *DraftClient) UpdateOne(d *Draft) *DraftUpdateOne {
+	mutation := newDraftMutation(c.config, OpUpdateOne, withDraft(d))
+	return &DraftUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *DraftClient) UpdateOneID(id string) *DraftUpdateOne {
+	mutation := newDraftMutation(c.config, OpUpdateOne, withDraftID(id))
+	return &DraftUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Draft.
+func (c *DraftClient) Delete() *DraftDelete {
+	mutation := newDraftMutation(c.config, OpDelete)
+	return &DraftDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *DraftClient) DeleteOne(d *Draft) *DraftDeleteOne {
+	return c.DeleteOneID(d.ID)
+}
+
+// DeleteOne returns a builder for deleting the given entity by its id.
+func (c *DraftClient) DeleteOneID(id string) *DraftDeleteOne {
+	builder := c.Delete().Where(draft.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &DraftDeleteOne{builder}
+}
+
+// Query returns a query builder for Draft.
+func (c *DraftClient) Query() *DraftQuery {
+	return &DraftQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Draft entity by its id.
+func (c *DraftClient) Get(ctx context.Context, id string) (*Draft, error) {
+	return c.Query().Where(draft.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *DraftClient) GetX(ctx context.Context, id string) *Draft {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryTags queries the tags edge of a Draft.
+func (c *DraftClient) QueryTags(d *Draft) *TagQuery {
+	query := &TagQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := d.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(draft.Table, draft.FieldID, id),
+			sqlgraph.To(tag.Table, tag.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, draft.TagsTable, draft.TagsPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(d.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *DraftClient) Hooks() []Hook {
+	return c.hooks.Draft
+}
+
 // TagClient is a client for the Tag schema.
 type TagClient struct {
 	config
@@ -330,6 +443,22 @@ func (c *TagClient) QueryBlogs(t *Tag) *BlogQuery {
 			sqlgraph.From(tag.Table, tag.FieldID, id),
 			sqlgraph.To(blog.Table, blog.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, true, tag.BlogsTable, tag.BlogsPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(t.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryDrafts queries the drafts edge of a Tag.
+func (c *TagClient) QueryDrafts(t *Tag) *DraftQuery {
+	query := &DraftQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := t.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(tag.Table, tag.FieldID, id),
+			sqlgraph.To(draft.Table, draft.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, tag.DraftsTable, tag.DraftsPrimaryKey...),
 		)
 		fromV = sqlgraph.Neighbors(t.driver.Dialect(), step)
 		return fromV, nil

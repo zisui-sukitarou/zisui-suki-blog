@@ -17,8 +17,12 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// EdgeBlogs holds the string denoting the blogs edge name in mutations.
 	EdgeBlogs = "blogs"
+	// EdgeDrafts holds the string denoting the drafts edge name in mutations.
+	EdgeDrafts = "drafts"
 	// BlogFieldID holds the string denoting the ID field of the Blog.
 	BlogFieldID = "blog_id"
+	// DraftFieldID holds the string denoting the ID field of the Draft.
+	DraftFieldID = "draft_id"
 	// Table holds the table name of the tag in the database.
 	Table = "tags"
 	// BlogsTable is the table that holds the blogs relation/edge. The primary key declared below.
@@ -26,6 +30,11 @@ const (
 	// BlogsInverseTable is the table name for the Blog entity.
 	// It exists in this package in order to avoid circular dependency with the "blog" package.
 	BlogsInverseTable = "blogs"
+	// DraftsTable is the table that holds the drafts relation/edge. The primary key declared below.
+	DraftsTable = "draft_tags"
+	// DraftsInverseTable is the table name for the Draft entity.
+	// It exists in this package in order to avoid circular dependency with the "draft" package.
+	DraftsInverseTable = "drafts"
 )
 
 // Columns holds all SQL columns for tag fields.
@@ -41,6 +50,9 @@ var (
 	// BlogsPrimaryKey and BlogsColumn2 are the table columns denoting the
 	// primary key for the blogs relation (M2M).
 	BlogsPrimaryKey = []string{"blog_id", "tag_id"}
+	// DraftsPrimaryKey and DraftsColumn2 are the table columns denoting the
+	// primary key for the drafts relation (M2M).
+	DraftsPrimaryKey = []string{"draft_id", "tag_id"}
 )
 
 // ValidColumn reports if the column name is valid (part of the table columns).

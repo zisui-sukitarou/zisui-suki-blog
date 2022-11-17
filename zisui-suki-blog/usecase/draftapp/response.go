@@ -21,7 +21,7 @@ type TagInfo struct {
 
 /*** Full Response ***/
 type DraftResponse struct {
-	BlogId     string      `json:"blogId"`
+	DraftId    string      `json:"draftId"`
 	Content    string      `json:"content"`
 	Title      string      `json:"title"`
 	Abstract   string      `json:"abstract"`
@@ -51,7 +51,7 @@ func NewDraftResponse(d *repository.DraftData, u *model.User) *DraftResponse {
 	}
 
 	return &DraftResponse{
-		BlogId:     string(d.Draft.DraftId),
+		DraftId:    string(d.Draft.DraftId),
 		Content:    string(d.Draft.Content),
 		Title:      string(d.Draft.Title),
 		Abstract:   string(d.Draft.Abstract),
@@ -66,7 +66,7 @@ func NewDraftResponse(d *repository.DraftData, u *model.User) *DraftResponse {
 
 /*** BlogReponse without Content ***/
 type DraftOverviewResponse struct {
-	BlogId     string      `json:"blogId"`
+	DraftId    string      `json:"draftId"`
 	Title      string      `json:"title"`
 	Abstract   string      `json:"abstract"`
 	Evaluation uint        `json:"evaluation"`
@@ -95,7 +95,7 @@ func NewDraftOverviewResponse(d *repository.DraftData, u *model.User) *DraftOver
 	}
 
 	return &DraftOverviewResponse{
-		BlogId:     string(d.Draft.DraftId),
+		DraftId:    string(d.Draft.DraftId),
 		Title:      string(d.Draft.Title),
 		Abstract:   string(d.Draft.Abstract),
 		Evaluation: uint(d.Draft.Evaluation),
@@ -104,5 +104,18 @@ func NewDraftOverviewResponse(d *repository.DraftData, u *model.User) *DraftOver
 		UpdatedAt:  d.Draft.UpdatedAt,
 		Writer:     writerInfo,
 		Tags:       tags,
+	}
+}
+
+/* response (when draft inited) */
+type DraftNewResponse struct {
+	DraftId string `json:"draftId"`
+	UserId  string `json:"userId"`
+}
+
+func NewDraftNewResponse(draftId model.DraftId, userId model.UserId) *DraftNewResponse {
+	return &DraftNewResponse{
+		DraftId: string(draftId),
+		UserId:  string(userId),
 	}
 }

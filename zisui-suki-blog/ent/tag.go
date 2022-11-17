@@ -33,9 +33,11 @@ type Tag struct {
 type TagEdges struct {
 	// Blogs holds the value of the blogs edge.
 	Blogs []*Blog `json:"blogs,omitempty"`
+	// Drafts holds the value of the drafts edge.
+	Drafts []*Draft `json:"drafts,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 }
 
 // BlogsOrErr returns the Blogs value or an error if the edge
@@ -45,6 +47,15 @@ func (e TagEdges) BlogsOrErr() ([]*Blog, error) {
 		return e.Blogs, nil
 	}
 	return nil, &NotLoadedError{edge: "blogs"}
+}
+
+// DraftsOrErr returns the Drafts value or an error if the edge
+// was not loaded in eager-loading.
+func (e TagEdges) DraftsOrErr() ([]*Draft, error) {
+	if e.loadedTypes[1] {
+		return e.Drafts, nil
+	}
+	return nil, &NotLoadedError{edge: "drafts"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -111,6 +122,11 @@ func (t *Tag) assignValues(columns []string, values []any) error {
 // QueryBlogs queries the "blogs" edge of the Tag entity.
 func (t *Tag) QueryBlogs() *BlogQuery {
 	return (&TagClient{config: t.config}).QueryBlogs(t)
+}
+
+// QueryDrafts queries the "drafts" edge of the Tag entity.
+func (t *Tag) QueryDrafts() *DraftQuery {
+	return (&TagClient{config: t.config}).QueryDrafts(t)
 }
 
 // Update returns a builder for updating this Tag.

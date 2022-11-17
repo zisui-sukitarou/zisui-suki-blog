@@ -26,6 +26,24 @@ var (
 		Columns:    BlogsColumns,
 		PrimaryKey: []*schema.Column{BlogsColumns[0]},
 	}
+	// DraftsColumns holds the columns for the "drafts" table.
+	DraftsColumns = []*schema.Column{
+		{Name: "draft_id", Type: field.TypeString, Unique: true, SchemaType: map[string]string{"mysql": "char(26)"}},
+		{Name: "user_id", Type: field.TypeString, SchemaType: map[string]string{"mysql": "char(26)"}},
+		{Name: "content", Type: field.TypeString, Size: 2147483647, SchemaType: map[string]string{"mysql": "text"}},
+		{Name: "title", Type: field.TypeString, Size: 2147483647, SchemaType: map[string]string{"mysql": "text"}},
+		{Name: "abstract", Type: field.TypeString, Size: 2147483647, SchemaType: map[string]string{"mysql": "text"}},
+		{Name: "evaluation", Type: field.TypeUint, SchemaType: map[string]string{"mysql": "int unsigned"}},
+		{Name: "status", Type: field.TypeUint, SchemaType: map[string]string{"mysql": "int unsigned"}},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+	}
+	// DraftsTable holds the schema information for the "drafts" table.
+	DraftsTable = &schema.Table{
+		Name:       "drafts",
+		Columns:    DraftsColumns,
+		PrimaryKey: []*schema.Column{DraftsColumns[0]},
+	}
 	// TagsColumns holds the columns for the "tags" table.
 	TagsColumns = []*schema.Column{
 		{Name: "tag_name", Type: field.TypeString, Unique: true, SchemaType: map[string]string{"mysql": "varchar(32)"}},
@@ -65,15 +83,44 @@ var (
 			},
 		},
 	}
+	// DraftTagsColumns holds the columns for the "draft_tags" table.
+	DraftTagsColumns = []*schema.Column{
+		{Name: "draft_id", Type: field.TypeString, SchemaType: map[string]string{"mysql": "char(26)"}},
+		{Name: "tag_id", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(32)"}},
+	}
+	// DraftTagsTable holds the schema information for the "draft_tags" table.
+	DraftTagsTable = &schema.Table{
+		Name:       "draft_tags",
+		Columns:    DraftTagsColumns,
+		PrimaryKey: []*schema.Column{DraftTagsColumns[0], DraftTagsColumns[1]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "draft_tags_draft_id",
+				Columns:    []*schema.Column{DraftTagsColumns[0]},
+				RefColumns: []*schema.Column{DraftsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+			{
+				Symbol:     "draft_tags_tag_id",
+				Columns:    []*schema.Column{DraftTagsColumns[1]},
+				RefColumns: []*schema.Column{TagsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		BlogsTable,
+		DraftsTable,
 		TagsTable,
 		BlogTagsTable,
+		DraftTagsTable,
 	}
 )
 
 func init() {
 	BlogTagsTable.ForeignKeys[0].RefTable = BlogsTable
 	BlogTagsTable.ForeignKeys[1].RefTable = TagsTable
+	DraftTagsTable.ForeignKeys[0].RefTable = DraftsTable
+	DraftTagsTable.ForeignKeys[1].RefTable = TagsTable
 }

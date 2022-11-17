@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 	"zisui-suki-blog/ent/blog"
+	"zisui-suki-blog/ent/draft"
 	"zisui-suki-blog/ent/tag"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -64,6 +65,21 @@ func (tc *TagCreate) AddBlogs(b ...*Blog) *TagCreate {
 		ids[i] = b[i].ID
 	}
 	return tc.AddBlogIDs(ids...)
+}
+
+// AddDraftIDs adds the "drafts" edge to the Draft entity by IDs.
+func (tc *TagCreate) AddDraftIDs(ids ...string) *TagCreate {
+	tc.mutation.AddDraftIDs(ids...)
+	return tc
+}
+
+// AddDrafts adds the "drafts" edges to the Draft entity.
+func (tc *TagCreate) AddDrafts(d ...*Draft) *TagCreate {
+	ids := make([]string, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return tc.AddDraftIDs(ids...)
 }
 
 // Mutation returns the TagMutation object of the builder.
@@ -233,6 +249,25 @@ func (tc *TagCreate) createSpec() (*Tag, *sqlgraph.CreateSpec) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
 					Column: blog.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := tc.mutation.DraftsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   tag.DraftsTable,
+			Columns: tag.DraftsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: draft.FieldID,
 				},
 			},
 		}

@@ -23,6 +23,7 @@ type DraftDeleteRequest struct {
 
 type DraftUpdateRequest struct {
 	DraftId    string   `json:"draftId"`
+	UserId     string   `json:"userId"`
 	Content    string   `json:"content"`
 	Abstract   string   `json:"abstract"`
 	Title      string   `json:"title"`
@@ -30,7 +31,12 @@ type DraftUpdateRequest struct {
 	Tags       []string `json:"tags"`
 }
 
+type DraftNewRequest struct {
+	UserId string `json:"userId"`
+}
+
 type DraftRegisterRequest struct {
+	DraftId    string   `json:"draftId"`
 	UserId     string   `json:"userId"`
 	Content    string   `json:"content"`
 	Title      string   `json:"title"`

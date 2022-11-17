@@ -86,7 +86,7 @@ func TestRegister(t *testing.T) {
 	data := []*userRegisterData{
 		{
 			name: "zisui-sukitarou",
-			displayName: "XISUI!",
+			displayName: "すきたろう",
 			email: "xxx@gmail.com",
 			password: "passw0rd",
 			icon: "yyy.png",

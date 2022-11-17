@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 	"zisui-suki-blog/ent/blog"
+	"zisui-suki-blog/ent/draft"
 	"zisui-suki-blog/ent/predicate"
 	"zisui-suki-blog/ent/tag"
 
@@ -69,6 +70,21 @@ func (tu *TagUpdate) AddBlogs(b ...*Blog) *TagUpdate {
 	return tu.AddBlogIDs(ids...)
 }
 
+// AddDraftIDs adds the "drafts" edge to the Draft entity by IDs.
+func (tu *TagUpdate) AddDraftIDs(ids ...string) *TagUpdate {
+	tu.mutation.AddDraftIDs(ids...)
+	return tu
+}
+
+// AddDrafts adds the "drafts" edges to the Draft entity.
+func (tu *TagUpdate) AddDrafts(d ...*Draft) *TagUpdate {
+	ids := make([]string, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return tu.AddDraftIDs(ids...)
+}
+
 // Mutation returns the TagMutation object of the builder.
 func (tu *TagUpdate) Mutation() *TagMutation {
 	return tu.mutation
@@ -93,6 +109,27 @@ func (tu *TagUpdate) RemoveBlogs(b ...*Blog) *TagUpdate {
 		ids[i] = b[i].ID
 	}
 	return tu.RemoveBlogIDs(ids...)
+}
+
+// ClearDrafts clears all "drafts" edges to the Draft entity.
+func (tu *TagUpdate) ClearDrafts() *TagUpdate {
+	tu.mutation.ClearDrafts()
+	return tu
+}
+
+// RemoveDraftIDs removes the "drafts" edge to Draft entities by IDs.
+func (tu *TagUpdate) RemoveDraftIDs(ids ...string) *TagUpdate {
+	tu.mutation.RemoveDraftIDs(ids...)
+	return tu
+}
+
+// RemoveDrafts removes "drafts" edges to Draft entities.
+func (tu *TagUpdate) RemoveDrafts(d ...*Draft) *TagUpdate {
+	ids := make([]string, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return tu.RemoveDraftIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -249,6 +286,60 @@ func (tu *TagUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if tu.mutation.DraftsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   tag.DraftsTable,
+			Columns: tag.DraftsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: draft.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tu.mutation.RemovedDraftsIDs(); len(nodes) > 0 && !tu.mutation.DraftsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   tag.DraftsTable,
+			Columns: tag.DraftsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: draft.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tu.mutation.DraftsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   tag.DraftsTable,
+			Columns: tag.DraftsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: draft.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, tu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{tag.Label}
@@ -308,6 +399,21 @@ func (tuo *TagUpdateOne) AddBlogs(b ...*Blog) *TagUpdateOne {
 	return tuo.AddBlogIDs(ids...)
 }
 
+// AddDraftIDs adds the "drafts" edge to the Draft entity by IDs.
+func (tuo *TagUpdateOne) AddDraftIDs(ids ...string) *TagUpdateOne {
+	tuo.mutation.AddDraftIDs(ids...)
+	return tuo
+}
+
+// AddDrafts adds the "drafts" edges to the Draft entity.
+func (tuo *TagUpdateOne) AddDrafts(d ...*Draft) *TagUpdateOne {
+	ids := make([]string, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return tuo.AddDraftIDs(ids...)
+}
+
 // Mutation returns the TagMutation object of the builder.
 func (tuo *TagUpdateOne) Mutation() *TagMutation {
 	return tuo.mutation
@@ -332,6 +438,27 @@ func (tuo *TagUpdateOne) RemoveBlogs(b ...*Blog) *TagUpdateOne {
 		ids[i] = b[i].ID
 	}
 	return tuo.RemoveBlogIDs(ids...)
+}
+
+// ClearDrafts clears all "drafts" edges to the Draft entity.
+func (tuo *TagUpdateOne) ClearDrafts() *TagUpdateOne {
+	tuo.mutation.ClearDrafts()
+	return tuo
+}
+
+// RemoveDraftIDs removes the "drafts" edge to Draft entities by IDs.
+func (tuo *TagUpdateOne) RemoveDraftIDs(ids ...string) *TagUpdateOne {
+	tuo.mutation.RemoveDraftIDs(ids...)
+	return tuo
+}
+
+// RemoveDrafts removes "drafts" edges to Draft entities.
+func (tuo *TagUpdateOne) RemoveDrafts(d ...*Draft) *TagUpdateOne {
+	ids := make([]string, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return tuo.RemoveDraftIDs(ids...)
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -510,6 +637,60 @@ func (tuo *TagUpdateOne) sqlSave(ctx context.Context) (_node *Tag, err error) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeString,
 					Column: blog.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if tuo.mutation.DraftsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   tag.DraftsTable,
+			Columns: tag.DraftsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: draft.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tuo.mutation.RemovedDraftsIDs(); len(nodes) > 0 && !tuo.mutation.DraftsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   tag.DraftsTable,
+			Columns: tag.DraftsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: draft.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tuo.mutation.DraftsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   tag.DraftsTable,
+			Columns: tag.DraftsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: draft.FieldID,
 				},
 			},
 		}

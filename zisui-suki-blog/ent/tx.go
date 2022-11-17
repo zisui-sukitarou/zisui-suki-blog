@@ -14,6 +14,8 @@ type Tx struct {
 	config
 	// Blog is the client for interacting with the Blog builders.
 	Blog *BlogClient
+	// Draft is the client for interacting with the Draft builders.
+	Draft *DraftClient
 	// Tag is the client for interacting with the Tag builders.
 	Tag *TagClient
 
@@ -152,6 +154,7 @@ func (tx *Tx) Client() *Client {
 
 func (tx *Tx) init() {
 	tx.Blog = NewBlogClient(tx.config)
+	tx.Draft = NewDraftClient(tx.config)
 	tx.Tag = NewTagClient(tx.config)
 }
 

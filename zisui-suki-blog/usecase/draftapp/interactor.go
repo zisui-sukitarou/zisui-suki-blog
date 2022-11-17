@@ -229,8 +229,48 @@ func (d *DraftInteractor) Update(request *DraftUpdateRequest) error {
 	return d.OutputPort.Update(NewDraftResponse(draft, user))
 }
 
+func (d *DraftInteractor) New(request *DraftNewRequest) error {
+	/* input data -> model object */
+	userId, err := model.NewUserId(request.UserId)
+	if err != nil {
+		return d.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
+	}
+
+	/* gen draft_id */
+	id, err := d.service().GenULID()
+	if err != nil {
+		return d.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
+	}
+
+	draftId, err := model.NewDraftId(id.String())
+	if err != nil {
+		return d.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
+	}
+
+	/* draft model object */
+	draft := &model.Draft{
+		DraftId: draftId,
+		UserId: userId,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+	err = d.DraftRepo.Register(draft)
+	if err != nil {
+		return d.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
+	}
+
+	/* response */
+	response := NewDraftNewResponse(draftId, userId)
+	return d.OutputPort.New(response)
+}
+
 func (d *DraftInteractor) Register(request *DraftRegisterRequest) error {
 	/* input data -> model object */
+	draftId, err := model.NewDraftId(request.DraftId)
+	if err != nil {
+		return d.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
+	}
+
 	userId, err := model.NewUserId(request.UserId)
 	if err != nil {
 		return d.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
@@ -278,17 +318,6 @@ func (d *DraftInteractor) Register(request *DraftRegisterRequest) error {
 			time.Now(),
 		)
 		d.TagRepo.Register(tag)
-	}
-
-	/* gen draft_id */
-	id, err := d.service().GenULID()
-	if err != nil {
-		return d.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
-	}
-
-	draftId, err := model.NewDraftId(id.String())
-	if err != nil {
-		return d.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
 	}
 
 	/* create draft & save */

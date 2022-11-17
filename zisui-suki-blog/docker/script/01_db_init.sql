@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS zisuidb;
-USE zisuidb;
+CREATE DATABASE IF NOT EXISTS blog_db;
+USE blog_db;
 /*
 CREATE DATABASE zisuidb;
 \c zisuidb;

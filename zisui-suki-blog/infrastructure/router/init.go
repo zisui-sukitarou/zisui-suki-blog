@@ -15,7 +15,6 @@ import (
 
 func Init() (*echo.Echo, error) {
 	e := echo.New()
-
 	db, err := db.Init()
 	if err != nil {
 		return e, err
@@ -27,23 +26,45 @@ func Init() (*echo.Echo, error) {
 	}
 
 	ctx := context.Background()
+
+	/* public blog */
 	blog := controller.NewBlogController(db, api.AuthApiDomain)
 
-	find := e.Group("/find")
-	find.GET("/by/id", blog.FindById(&ctx))
-	find.GET("/by/tag", blog.FindByTagName(&ctx))
-	find.GET("/by/userId", blog.FindByUserId(&ctx))
-	find.GET("/by/tag/userId", blog.FindByUserIdAndTagName(&ctx))
-	find.GET("/by/userName", blog.FindByUserName(&ctx))
-	find.GET("/by/tag/userName", blog.FindByUserNameAndTagName(&ctx))
+	findBlog := e.Group("/find/blog")
+	findBlog.GET("/by/id", blog.FindById(&ctx))
+	findBlog.GET("/by/tag", blog.FindByTagName(&ctx))
+	findBlog.GET("/by/userId", blog.FindByUserId(&ctx))
+	findBlog.GET("/by/tag/userId", blog.FindByUserIdAndTagName(&ctx))
+	findBlog.GET("/by/userName", blog.FindByUserName(&ctx))
+	findBlog.GET("/by/tag/userName", blog.FindByUserNameAndTagName(&ctx))
 
-	register := e.Group("/register")
-	register.Use(middleware.JWTWithConfig(newConfig()))
-	register.POST("", blog.Register(&ctx))
+	registerBlog := e.Group("/register/blog")
+	registerBlog.Use(middleware.JWTWithConfig(newConfig()))
+	registerBlog.POST("", blog.Register(&ctx))
 
-	update := e.Group("/update")
-	update.Use(middleware.JWTWithConfig(newConfig()))
-	update.POST("", blog.Update(&ctx))
+	updateBlog := e.Group("/update/blog")
+	updateBlog.Use(middleware.JWTWithConfig(newConfig()))
+	updateBlog.POST("", blog.Update(&ctx))
+
+	/* private draft */
+	draft := controller.NewDraftController(db, api.AuthApiDomain)
+
+	findDraft := e.Group("/find/draft")
+	findDraft.Use(middleware.JWTWithConfig(newConfig()))
+	findDraft.GET("/by/id", draft.FindById(&ctx))
+	findDraft.GET("/by/userId", draft.FindByUserId(&ctx))
+
+	newDraft := e.Group("/new/draft")
+	newDraft.Use(middleware.JWTWithConfig(newConfig()))
+	newDraft.POST("", draft.New(&ctx))
+
+	registerDraft := e.Group("/register/draft")
+	registerDraft.Use(middleware.JWTWithConfig(newConfig()))
+	registerDraft.POST("", draft.Register(&ctx))
+
+	updateDraft := e.Group("/update/draft")
+	updateDraft.Use(middleware.JWTWithConfig(newConfig()))
+	updateDraft.POST("", draft.Update(&ctx))
 
 	return e, nil
 }

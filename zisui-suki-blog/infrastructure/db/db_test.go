@@ -6,6 +6,8 @@ import (
 	"testing"
 	"zisui-suki-blog/ent/migrate"
 	"zisui-suki-blog/infrastructure/db"
+	_ "entgo.io/ent/dialect/sql"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func TestInitDB(t *testing.T) {
