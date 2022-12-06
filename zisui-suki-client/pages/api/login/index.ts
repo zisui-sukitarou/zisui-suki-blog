@@ -1,6 +1,5 @@
 import type { NextApiRequest as Req, NextApiResponse as Res } from "next"
 import { parseCookies, setCookie, destroyCookie } from "nookies"
-import { json } from "stream/consumers"
 import { zisuiSukiIdBaseUrl } from "../../../consts/config"
 import { userError } from "../../../domain/user/errors"
 

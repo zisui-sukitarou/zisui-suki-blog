@@ -2,7 +2,7 @@ import { GetServerSideProps, NextPage } from "next"
 import { useRouter } from "next/router"
 import { userError } from "../../../domain/user/errors"
 import { validateUserName } from "../../../domain/user/validations"
-import { findBlogsByUserName } from "../../../service/blogApi/find/by/userName"
+import { findBlogsByUserName } from "../../../service/blogApi/blog/find/by/userName"
 
 type Props = {
     blogs: Array<BlogOverview>
@@ -27,20 +27,9 @@ const UserItemPage = ({ blogs }: Props) => {
 
 export default UserItemPage
 
-type Redirect =
-| {
-    statusCode: 301 | 302 | 303 | 307 | 308; // ステータスコード
-    destination: string; // リダイレクト先のURL
-    basePath?: false; // `basePath`を無効にします
-  }
-| {
-    permanent: boolean; // 永続的なリダイレクト化のフラグ
-    destination: string; // 同上
-    basePath?: false; // 同上
-  };
-
 export const getServerSideProps: GetServerSideProps = async (context): Promise<{props: Props} | {redirect: Redirect}> => {
     const { user_name, page } = context.query
+    /* calc begin & end (= begin + 10) of blogs */
     let begin: number, end: number
     if (!page) {
         begin = 0
@@ -74,6 +63,7 @@ export const getServerSideProps: GetServerSideProps = async (context): Promise<{
             }
         } 
     }
+
     /* fetch data from zisui-suki-blog-api */
     const {error, blogs} = await findBlogsByUserName(user_name, begin, end)
     console.log("blogs", blogs)

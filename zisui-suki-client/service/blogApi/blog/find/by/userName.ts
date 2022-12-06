@@ -8,9 +8,9 @@ export const findBlogsByUserName = async (userName: string, begin: number, end: 
 }> => {
 
     const query = `?userName=${userName}&begin=${begin}&end=${end}`
-    const response = await fetch(blogApiConfig.findByUserName.url + query, {
-        method: blogApiConfig.findByUserName.method,
-        headers: blogApiConfig.findByUserName.headers,
+    const response = await fetch(blogApiConfig.findBlogByUserName.url + query, {
+        method: blogApiConfig.findBlogByUserName.method,
+        headers: blogApiConfig.findBlogByUserName.headers,
     })
 
     /* handle with server error */
