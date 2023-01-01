@@ -35,13 +35,13 @@ const DraftEditPage: NextPage = () => {
         setDraft(nDraft)
     }
 
-    if (!draft) {
+    if (!draft || !currentUser) {
         return <div></div>
     }
     
     return (
         <div>
-            <h1>{currentUser?.displayName + "の下書き"}</h1>
+            <h1>{currentUser.displayName + "の下書き"}</h1>
             <h2>タイトル</h2>
             <textarea value={draft.title}></textarea>
             <h2>概要</h2>
