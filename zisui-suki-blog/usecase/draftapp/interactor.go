@@ -2,6 +2,7 @@ package draftapp
 
 import (
 	"errors"
+	"log"
 	"time"
 	"zisui-suki-blog/domain/model"
 	"zisui-suki-blog/domain/repository"
@@ -178,6 +179,7 @@ func (d *DraftInteractor) Update(request *DraftUpdateRequest) error {
 	var tagNames []model.TagName
 	for _, tag := range request.Tags {
 		tagName, err := model.NewTagName(tag)
+		log.Println("usecase: draft: update:", tagName)
 		if err != nil {
 			return d.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
 		}
@@ -216,17 +218,8 @@ func (d *DraftInteractor) Update(request *DraftUpdateRequest) error {
 		return d.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
 	}
 
-	/* find user by user_id */
-	exists, user, err := d.UserRepo.FindById(draft.Draft.UserId)
-	if !exists {
-		return d.OutputPort.RespondErorr(apperr.NewErrorResponse(errors.New("user of the id dosen't exist")))
-	}
-	if err != nil {
-		return d.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
-	}
-
 	/* response */
-	return d.OutputPort.Update(NewDraftResponse(draft, user))
+	return d.OutputPort.Update()
 }
 
 func (d *DraftInteractor) New(request *DraftNewRequest) error {

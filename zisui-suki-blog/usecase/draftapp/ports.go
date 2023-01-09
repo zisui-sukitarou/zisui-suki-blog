@@ -18,7 +18,7 @@ type DraftOutputPort interface {
 	FindByUserName([]*DraftOverviewResponse) error
 	New(*DraftNewResponse) error
 	Register() error
-	Update(*DraftResponse) error
+	Update() error
 	Delete() error
 	/* err */
 	RespondErorr(*apperr.ErrorResponse) error

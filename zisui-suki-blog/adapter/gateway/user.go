@@ -11,6 +11,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// TODO: キャッシュ使うように
 type UserGateway struct {
 	domain string
 	ctx    echo.Context

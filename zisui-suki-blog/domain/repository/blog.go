@@ -5,7 +5,7 @@ import (
 )
 
 /*** blog repository ***
-* PK で Find するメソッドは、返り値の1つ目が存在フラグ
+* Unique Key で Find するメソッドは、返り値の1つ目が存在フラグ
 * Blog 配列が返ってくるメソッドの Blog.Content は空文字列（BlogOverviewResponse に不要なため）
  */
 type BlogRepository interface {

@@ -2,7 +2,6 @@ package blogapp
 
 import (
 	"errors"
-	"log"
 	"time"
 	"zisui-suki-blog/domain/model"
 	"zisui-suki-blog/domain/repository"
@@ -38,7 +37,6 @@ func (b *BlogInteractor) FindById(request *BlogFindByIdRequest) error {
 	if err != nil {
 		return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
 	}
-	log.Println("blog_id:", blogId)
 
 	/* find blog by id */
 	exists, blog, err := b.BlogRepo.FindById(blogId)

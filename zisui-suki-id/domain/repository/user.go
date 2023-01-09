@@ -5,7 +5,7 @@ import (
 )
 
 /* user repository */
-// * Unique で Find するメソッドは、返り値の1つ目が存在フラグ
+// * Unique Key で Find するメソッドは、返り値の1つ目が存在フラグ
 type UserRepository interface {
 	FindById(model.UserId) (bool, *model.User, error)
 	FindByName(model.UserName) (bool, *model.User, error)

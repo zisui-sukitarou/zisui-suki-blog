@@ -12,6 +12,15 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMDFHS
 accept: application/json
 Content-Type: application/json
 
+{"draftId": "01GJ4HKM7T9N2YNRT56K11F4DE", "userId": "01GJ09E8BQCAB6KYA04GGGQSHH", "content":"カルボナーラ", "title":"りゅうじのカルボナーラ", "abstract":"おいしい", "evaluation": 9, "status":0, "tags":["パスタ", "カルボナーラ"]}
+
+###
+
+POST http://localhost:3002/update/draft
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMDFHSjA5RThCUUNBQjZLWUEwNEdHR1FTSEgifQ.rtKt4Rdw_tyeVaY-kbpY_SuKomwSejFeFicD2gbAx2w
+accept: application/json
+Content-Type: application/json
+
 {"draftId": "01GJ0A87MRWZVY40PPJDX4GMFT", "userId": "01GJ09E8BQCAB6KYA04GGGQSHH", "content":"キノコのパスタ", "title":"きのこの和風パスタ", "abstract":"エリンギとしめじを使ったパスタ", "evaluation": 7, "status":0, "tags":["パスタ", "和風"]}
 
 ###

@@ -1,11 +1,24 @@
 package api
 
+import (
+	"os"
+	"log"
+)
+
 type API struct {
-	AuthApiDomain string
+	IdApiBaseURL string
+}
+
+func getIdApiBaseURL() string {
+	base := os.Getenv("ID_API_BASE_URL")
+	if base == "" {
+		log.Panic("env: ID_API_BASE_URL not specified")
+	}
+	return base
 }
 
 func Init() (*API, error) {
 	return &API{
-		AuthApiDomain: "http://localhost:3001/",
+		IdApiBaseURL: getIdApiBaseURL(),
 	}, nil
 }

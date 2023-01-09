@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"os"
+	"log"
 	"zisui-suki-blog/adapter/controller"
 	"zisui-suki-blog/infrastructure/api"
 	"zisui-suki-blog/infrastructure/db"
@@ -28,7 +30,7 @@ func Init() (*echo.Echo, error) {
 	ctx := context.Background()
 
 	/* public blog */
-	blog := controller.NewBlogController(db, api.AuthApiDomain)
+	blog := controller.NewBlogController(db, api.IdApiBaseURL)
 
 	findBlog := e.Group("/find/blog")
 	findBlog.GET("/by/id", blog.FindById(&ctx))
@@ -47,7 +49,7 @@ func Init() (*echo.Echo, error) {
 	updateBlog.POST("", blog.Update(&ctx))
 
 	/* private draft */
-	draft := controller.NewDraftController(db, api.AuthApiDomain)
+	draft := controller.NewDraftController(db, api.IdApiBaseURL)
 
 	findDraft := e.Group("/find/draft")
 	findDraft.Use(middleware.JWTWithConfig(newConfig()))
@@ -70,15 +72,23 @@ func Init() (*echo.Echo, error) {
 }
 
 /* JWT config */
+func getSecretKey() string {
+	key := os.Getenv("JWT_SECRET_KEY")
+	if key == "" {
+		log.Panic("env: JWT_SECRET_KEY not specified")
+	}
+	return key
+}
+
 func newConfig() middleware.JWTConfig {
 	return middleware.JWTConfig{
-		SigningKey: []byte("SECRET_KEY"),
+		SigningKey: []byte(getSecretKey()),
 		ParseTokenFunc: func(tokenString string, c echo.Context) (interface{}, error) {
 			keyFunc := func(token *jwt.Token) (interface{}, error) {
 				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 					return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 				}
-				return []byte("SECRET_KEY"), nil
+				return []byte(getSecretKey()), nil
 			}
 
 			token, err := jwt.Parse(tokenString, keyFunc)

@@ -52,8 +52,8 @@ func (d *DraftPresenter) Register() error {
 	return d.c.JSON(http.StatusCreated, nil)
 }
 
-func (d *DraftPresenter) Update(response *draftapp.DraftResponse) error {
-	return d.c.JSON(http.StatusCreated, response)
+func (d *DraftPresenter) Update() error {
+	return d.c.JSON(http.StatusCreated, nil)
 }
 
 func (d *DraftPresenter) Delete() error {
