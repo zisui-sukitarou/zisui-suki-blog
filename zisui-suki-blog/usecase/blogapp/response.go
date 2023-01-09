@@ -7,7 +7,6 @@ import (
 )
 
 type WriterInfo struct {
-	UserId      string `json:"userId"`
 	Name        string `json:"name"`
 	DisplayName string `json:"displayName"`
 	Email       string `json:"email"`
@@ -35,7 +34,6 @@ type BlogResponse struct {
 
 func NewBlogResponse(b *repository.BlogData, u *model.User) *BlogResponse {
 	writerInfo := &WriterInfo{
-		UserId:      string(u.UserId),
 		Name:        string(u.Name),
 		DisplayName: string(u.DisplayName),
 		Email:       string(u.Email),
@@ -79,7 +77,6 @@ type BlogOverviewResponse struct {
 
 func NewBlogOverviewResponse(b *repository.BlogData, u *model.User) *BlogOverviewResponse {
 	writerInfo := &WriterInfo{
-		UserId:      string(u.UserId),
 		Name:        string(u.Name),
 		DisplayName: string(u.DisplayName),
 		Email:       string(u.Email),

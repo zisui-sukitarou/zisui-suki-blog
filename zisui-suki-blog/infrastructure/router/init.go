@@ -35,8 +35,6 @@ func Init() (*echo.Echo, error) {
 	findBlog := e.Group("/find/blog")
 	findBlog.GET("/by/id", blog.FindById(&ctx))
 	findBlog.GET("/by/tag", blog.FindByTagName(&ctx))
-	findBlog.GET("/by/userId", blog.FindByUserId(&ctx))
-	findBlog.GET("/by/tag/userId", blog.FindByUserIdAndTagName(&ctx))
 	findBlog.GET("/by/userName", blog.FindByUserName(&ctx))
 	findBlog.GET("/by/tag/userName", blog.FindByUserNameAndTagName(&ctx))
 

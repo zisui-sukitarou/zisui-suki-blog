@@ -7,7 +7,6 @@ import (
 
 /* return user info */
 type UserResponse struct {
-	UserId      string    `json:"userId"`
 	Name        string    `json:"name"`
 	DisplayName string    `json:"displayName"`
 	Email       string    `json:"email"`
@@ -19,7 +18,6 @@ type UserResponse struct {
 
 func NewUserResponse(u *model.User) *UserResponse {
 	return &UserResponse{
-		UserId:      string(u.UserId),
 		Name:        string(u.Name),
 		DisplayName: string(u.DisplayName),
 		Email:       string(u.Email),

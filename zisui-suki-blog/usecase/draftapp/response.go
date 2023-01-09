@@ -7,7 +7,6 @@ import (
 )
 
 type WriterInfo struct {
-	UserId      string `json:"userId"`
 	Name        string `json:"name"`
 	DisplayName string `json:"displayName"`
 	Email       string `json:"email"`
@@ -35,7 +34,6 @@ type DraftResponse struct {
 
 func NewDraftResponse(d *repository.DraftData, u *model.User) *DraftResponse {
 	writerInfo := &WriterInfo{
-		UserId:      string(u.UserId),
 		Name:        string(u.Name),
 		DisplayName: string(u.DisplayName),
 		Email:       string(u.Email),
@@ -79,7 +77,6 @@ type DraftOverviewResponse struct {
 
 func NewDraftOverviewResponse(d *repository.DraftData, u *model.User) *DraftOverviewResponse {
 	writerInfo := &WriterInfo{
-		UserId:      string(u.UserId),
 		Name:        string(u.Name),
 		DisplayName: string(u.DisplayName),
 		Email:       string(u.Email),

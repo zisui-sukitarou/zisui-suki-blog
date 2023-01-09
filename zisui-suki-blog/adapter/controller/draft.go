@@ -41,7 +41,8 @@ func (d *DraftController) New(ctx *context.Context) func(c echo.Context) error {
 	}
 }
 
-// TODO: jwt からの userId と params の userId が等しいか確認する実装に変更
+// TODO: 書き込み系は、db内の`user_id`と一致するか確認する
+
 func (d *DraftController) Register(ctx *context.Context) func(c echo.Context) error {
 	return func(c echo.Context) error {
 		/* get request parameters */
@@ -98,12 +99,17 @@ func (d *DraftController) FindById(ctx *context.Context) func(c echo.Context) er
 
 func (d *DraftController) FindByUserId(ctx *context.Context) func(c echo.Context) error {
 	return func(c echo.Context) error {
+		/* get user_id from token */
+		token := c.Get("user").(*jwt.Token)
+		claims := token.Claims.(jwt.MapClaims)
+		userId := claims["userId"].(string)
+
 		/* get request parameters */
-		userId := c.QueryParam("userId")
 		begin, err := strconv.Atoi(c.QueryParam("begin"))
 		if err != nil {
 			return err
 		}
+		
 		end, err := strconv.Atoi(c.QueryParam("end"))
 		if err != nil {
 			return err
@@ -120,29 +126,6 @@ func (d *DraftController) FindByUserId(ctx *context.Context) func(c echo.Context
 	}
 }
 
-func (d *DraftController) FindByUserName(ctx *context.Context) func(c echo.Context) error {
-	return func(c echo.Context) error {
-		/* get request parameters */
-		userName := c.QueryParam("userName")
-		begin, err := strconv.Atoi(c.QueryParam("begin"))
-		if err != nil {
-			return err
-		}
-		end, err := strconv.Atoi(c.QueryParam("end"))
-		if err != nil {
-			return err
-		}
-
-		request := &draftapp.DraftFindByUserNameRequest{
-			UserName: userName,
-			Begin:    uint(begin),
-			End:      uint(end),
-		}
-
-		/* return response */
-		return d.inputPort(c, ctx).FindByUserName(request)
-	}
-}
 
 func (d *DraftController) Delete(ctx *context.Context) func(c echo.Context) error {
 	return func(c echo.Context) error {

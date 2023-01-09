@@ -15,7 +15,7 @@ type UserInputPort interface {
 type UserOutputPort interface {
 	Login(*LoginResponse) error // user_id を元に JWT token を作成
 	SignUp(*SignUpResponse) error
-	FindById(*UserResponse) error
+	FindById(*UserResponse) error // blog api から使われる
 	FindByName(*UserResponse) error
 	Update(*UpdateResponse) error
 	UpdatePassword(*UpdatePasswordResponse) error

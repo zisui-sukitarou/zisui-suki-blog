@@ -99,30 +99,6 @@ func (b *BlogController) FindByTagName(ctx *context.Context) func(c echo.Context
 	}
 }
 
-func (b *BlogController) FindByUserId(ctx *context.Context) func(c echo.Context) error {
-	return func(c echo.Context) error {
-		/* get request parameters */
-		userId := c.QueryParam("userId")
-		begin, err := strconv.Atoi(c.QueryParam("begin"))
-		if err != nil {
-			return err
-		}
-		end, err := strconv.Atoi(c.QueryParam("end"))
-		if err != nil {
-			return err
-		}
-
-		request := &blogapp.BlogFindByUserIdRequest{
-			UserId: userId,
-			Begin:  uint(begin),
-			End:    uint(end),
-		}
-
-		/* return response */
-		return b.inputPort(c, ctx).FindByUserId(request)
-	}
-}
-
 func (b *BlogController) FindByUserName(ctx *context.Context) func(c echo.Context) error {
 	return func(c echo.Context) error {
 		/* get request parameters */
@@ -144,32 +120,6 @@ func (b *BlogController) FindByUserName(ctx *context.Context) func(c echo.Contex
 
 		/* return response */
 		return b.inputPort(c, ctx).FindByUserName(request)
-	}
-}
-
-func (b *BlogController) FindByUserIdAndTagName(ctx *context.Context) func(c echo.Context) error {
-	return func(c echo.Context) error {
-		/* get request parameters */
-		tagName := c.QueryParam("tagName")
-		userId := c.QueryParam("userId")
-		begin, err := strconv.Atoi(c.QueryParam("begin"))
-		if err != nil {
-			return err
-		}
-		end, err := strconv.Atoi(c.QueryParam("end"))
-		if err != nil {
-			return err
-		}
-
-		request := &blogapp.BlogFindByUserIdAndTagRequest{
-			TagName: tagName,
-			UserId:  userId,
-			Begin:   uint(begin),
-			End:     uint(end),
-		}
-
-		/* return response */
-		return b.inputPort(c, ctx).FindByUserIdAndTagName(request)
 	}
 }
 
