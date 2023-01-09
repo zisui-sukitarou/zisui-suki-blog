@@ -6,7 +6,7 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:3001/find/by/id?userId=01GG4EBVGCF6ZC5NE91KFZ6PH5
+GET http://localhost:3001/find/by/id?userId=01GJ09E8BQCAB6KYA04GGGQSHH
 accept: application/json
 Content-Type: application/json
 
@@ -20,4 +20,4 @@ Content-Type: application/json
 ###
 
 GET http://localhost:3001/find/by/token
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMDFHRzRFQlZHQ0Y2WkM1TkU5MUtGWjZQSDUifQ.KhVnae0iF7uLZWPxfAcC3aIzlAmkiO4jMMTrFb3OgcQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwMUdKMDlFOEJRQ0FCNktZQTA0R0dHUVNISCJ9.7lQrBgjv4_6vUW8BL7upoRZvEUuuYAJXe4eRI2BMT-s

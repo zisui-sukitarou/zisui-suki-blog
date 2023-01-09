@@ -41,6 +41,7 @@ func (d *DraftController) New(ctx *context.Context) func(c echo.Context) error {
 	}
 }
 
+// TODO: jwt からの userId と params の userId が等しいか確認する実装に変更
 func (d *DraftController) Register(ctx *context.Context) func(c echo.Context) error {
 	return func(c echo.Context) error {
 		/* get request parameters */
@@ -51,8 +52,8 @@ func (d *DraftController) Register(ctx *context.Context) func(c echo.Context) er
 		}
 
 		/* get user_id from token */
-		register := c.Get("user").(*jwt.Token)
-		claims := register.Claims.(jwt.MapClaims)
+		token := c.Get("user").(*jwt.Token)
+		claims := token.Claims.(jwt.MapClaims)
 		userId := claims["userId"].(string)
 		request.UserId = userId
 
@@ -69,6 +70,12 @@ func (d *DraftController) Update(ctx *context.Context) func(c echo.Context) erro
 		if err != nil {
 			return err
 		}
+
+		/* get user_id from token */
+		token := c.Get("user").(*jwt.Token)
+		claims := token.Claims.(jwt.MapClaims)
+		userId := claims["userId"].(string)
+		request.UserId = userId
 
 		/* return response */
 		return d.inputPort(c, ctx).Update(request)

@@ -3,10 +3,9 @@ package db
 import (
 	"log"
 	"os"
+	
 	"zisui-suki-blog/ent"
-
 	"entgo.io/ent/dialect/sql"
-
 	_ "github.com/go-sql-driver/mysql"
 )
 

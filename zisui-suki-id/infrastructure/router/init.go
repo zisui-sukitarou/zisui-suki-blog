@@ -36,8 +36,6 @@ func Init() (*echo.Echo, error) {
 	findByToken.Use(middleware.JWTWithConfig(newConfig()))
 	findByToken.GET("", user.FindByToken(&ctx))
 
-	log.Println("infra: router init")
-
 	return e, nil
 }
 

@@ -62,9 +62,9 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:3002/update
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMDFHRzRFQlZHQ0Y2WkM1TkU5MUtGWjZQSDUifQ.KhVnae0iF7uLZWPxfAcC3aIzlAmkiO4jMMTrFb3OgcQ
+POST http://localhost:3002/update/draft
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwMUdKMDlFOEJRQ0FCNktZQTA0R0dHUVNISCJ9.7lQrBgjv4_6vUW8BL7upoRZvEUuuYAJXe4eRI2BMT-s
 accept: application/json
 Content-Type: application/json
 
-{"blogId": "01GG6SPB7M2ZY2RYCAPENXX02C", "content":"# キノコのパスタ", "title":"きのこの和風パスタ", "abstract":"エリンギと舞茸を使ったパスタ", "evaluation": 4, "status":0, "tags":[]}
+{"draftId": "01GJ0A87MRWZVY40PPJDX4GMFT", "content":"# キノコのパスタ", "title":"きのこの和風パスタ", "abstract":"エリンギと舞茸を使ったパスタ", "evaluation": 4, "status":0, "tags":[]}

@@ -40,8 +40,6 @@ type UserData struct {
 
 /* find by id */
 func (g *UserGateway) FindById(userId model.UserId) (bool, *model.User, error) {
-	/* extract token from echo context */
-	// token := g.ctx.Request().Header.Get("Authorization")
 
 	/* do http request -> get response */
 	client := http.Client{}
@@ -87,8 +85,6 @@ func (g *UserGateway) FindById(userId model.UserId) (bool, *model.User, error) {
 
 /* find by id */
 func (g *UserGateway) FindByUserName(userName model.UserName) (bool, *model.User, error) {
-	/* extract token from echo context */
-	// token := g.ctx.Request().Header.Get("Authorization")
 
 	/* do http request -> get response */
 	client := http.Client{}

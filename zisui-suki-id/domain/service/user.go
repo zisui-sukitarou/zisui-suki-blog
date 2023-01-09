@@ -3,6 +3,8 @@ package service
 import (
 	"math/rand"
 	"time"
+	"os"
+	"log"
 	"zisui-suki-blog/domain/model"
 	"zisui-suki-blog/domain/repository"
 
@@ -12,9 +14,6 @@ import (
 )
 
 type User struct {
-}
-
-type Status struct {
 }
 
 func (u *User) GenULID() (model.UserId, error) {
@@ -76,11 +75,19 @@ func (u *User) IsConfigured(
 }
 
 // TODO
+func getSecretKey() string {
+	key := os.Getenv("JWT_SECRET_KEY")
+	if key == "" {
+		log.Panic("env: JWT_SECRET_KEY not specified")
+	}
+	return key
+}
+
 func (u *User) GenJWT(userId model.UserId) (string, error) {
 	claims := jwt.MapClaims{
-		"user_id": userId,
+		"userId": userId,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte("SECRET_KEY"))
+	return token.SignedString([]byte(getSecretKey()))
 }
