@@ -1,19 +1,19 @@
 export const blogApiConfig = {
-    findBlogByTag: {
+    findBlogById: {
+        url: "http://localhost:3002/find/blog/by/id",
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    },
+    findBlogsByTagName: {
         url: "http://localhost:3002/find/blog/by/tag",
         method: "GET",
         headers: {
             'Content-Type': 'application/json'
         },
     },
-    findBlogByUserId: {
-        url: "http://localhost:3002/find/blog/by/userId",
-        method: "GET",
-        headers: {
-            'Content-Type': 'application/json'
-        },
-    },
-    findBlogByUserName: {
+    findBlogsByUserName: {
         url: "http://localhost:3002/find/blog/by/userName",
         method: "GET",
         headers: {
@@ -28,7 +28,7 @@ export const blogApiConfig = {
             'Content-Type': 'application/json'
         },
     },
-    findDraftByUserId: {
+    findDraftsByUserId: {
         url: "http://localhost:3002/find/draft/by/userId",
         method: "GET",
         headers: {

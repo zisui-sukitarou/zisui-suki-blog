@@ -14,7 +14,7 @@ type WriterInfo struct {
 }
 
 type TagInfo struct {
-	TagName string `json:"tagsName"`
+	TagName string `json:"tagName"`
 	Icon    string `json:"icon"`
 }
 

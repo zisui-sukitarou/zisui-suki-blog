@@ -1,4 +1,6 @@
 type Tag = {
-    name: string
+    tagName: string
     icon: string
+    createdAt: string
+    updatedAt: string
 }

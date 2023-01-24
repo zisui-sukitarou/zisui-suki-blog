@@ -25,6 +25,31 @@ func NewUserInteractor(
 	}
 }
 
+func (u *UserInteractor) NameToUserId(request *UserNameToUserIdRequest) error {
+	/* input data -> mode object */
+	name, err := model.NewUserName(request.Name)
+	if err != nil {
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
+	}
+
+	/* does user exist ? */
+	status := Status{}
+	exists, user, err := u.Repository.FindByName(name)
+	if !exists {
+		return u.OutputPort.Login(NewLoginResponse(
+			status.UserNotExists(),
+			"",
+			&model.User{},
+		))
+	}
+	if err != nil {
+		return u.OutputPort.RespondError(apperr.NewErrorResponse(err))
+	}
+
+	/* response */
+	return u.OutputPort.NameToUserId(NewUserNameToUserIdResponse(user.UserId))
+}
+
 func (u *UserInteractor) Login(request *UserLoginRequest) error {
 	/* input data -> model object */
 	name, err := model.NewUserName(request.Name)

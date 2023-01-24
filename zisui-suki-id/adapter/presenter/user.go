@@ -20,6 +20,10 @@ func NewUserPresenter(
 	}
 }
 
+func (u *UserPresenter) NameToUserId(response *userapp.UserNameToUserIdResponse) error {
+	return u.c.JSON(http.StatusOK, response)
+}
+
 func (u *UserPresenter) Login(response *userapp.LoginResponse) error {
 	return u.c.JSON(http.StatusOK, response)
 }

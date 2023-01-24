@@ -21,6 +21,19 @@ func NewUserController(client *ent.Client) *UserController {
 	}
 }
 
+func (u *UserController) NameToUserId(ctx *context.Context) func(c echo.Context) error {
+	return func(c echo.Context) error {
+		/* get request parameters */
+		userName := c.QueryParam("name")
+		request := &userapp.UserNameToUserIdRequest{
+			Name: userName,
+		}
+		
+		/* return response */
+		return u.inputPort(c, ctx).NameToUserId(request)
+	}
+}
+
 func (u *UserController) Login(ctx *context.Context) func(c echo.Context) error {
 	return func(c echo.Context) error {
 		/* get request parameters */

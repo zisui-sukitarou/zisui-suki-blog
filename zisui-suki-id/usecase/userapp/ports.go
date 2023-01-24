@@ -7,6 +7,7 @@ type UserInputPort interface {
 	SignUp(*UserSignUpRequest) error
 	FindById(*UserFindByIdRequest) error
 	FindByName(*UserFindByNameRequest) error
+	NameToUserId(*UserNameToUserIdRequest) error
 	Update(*UserUpdateRequest) error
 	UpdatePassword(*UserUpdatePasswordRequest) error
 	Delete(*UserDeleteRequest) error
@@ -17,6 +18,7 @@ type UserOutputPort interface {
 	SignUp(*SignUpResponse) error
 	FindById(*UserResponse) error // blog api から使われる
 	FindByName(*UserResponse) error
+	NameToUserId(*UserNameToUserIdResponse) error // blog api から使われる
 	Update(*UpdateResponse) error
 	UpdatePassword(*UpdatePasswordResponse) error
 	Delete() error

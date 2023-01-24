@@ -5,8 +5,9 @@ import { useCurrentUser } from "../../hooks/useCurrentUser"
 import { useRequireLogin } from "../../hooks/useRequireLogin"
 import { findDraftsByUserId } from "../../service/nextApi/draft/find/by/userId"
 import { newDraft } from "../../service/nextApi/draft/new"
+import Template from "../../components/templates/drafts/index"
 
-const DraftPage: NextPage = () => {
+const Page: NextPage = () => {
 
     useRequireLogin()
     const {currentUser} = useCurrentUser()
@@ -18,21 +19,10 @@ const DraftPage: NextPage = () => {
             setDrafts(drafts)
         })()
     }, [])
-
-    const Drafts = drafts.map( draft => {
-        return (<div key={draft.draftId}>
-            <h2>{draft.title}</h2>
-            <h3>{"概要：" + draft.abstract}</h3>
-        </div>)
-    })
     
-    return (
-        <div>
-            <h1>{currentUser?.displayName + "の下書き"}</h1>
-            {Drafts}
-            <button onClick={() => {newDraft()}}>新規作成</button>
-        </div>
-    )
+    return <Template 
+        drafts={drafts} 
+        currentUser={currentUser}/>
 }
 
-export default DraftPage
+export default Page

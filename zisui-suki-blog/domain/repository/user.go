@@ -9,4 +9,5 @@ import (
 type UserRepository interface {
 	FindById(model.UserId) (bool, *model.User, error)
 	FindByUserName(model.UserName) (bool, *model.User, error)
+	NameToId(model.UserName) (bool, model.UserId, error)
 }

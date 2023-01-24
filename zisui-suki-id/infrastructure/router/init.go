@@ -36,6 +36,9 @@ func Init() (*echo.Echo, error) {
 	findByToken.Use(middleware.JWTWithConfig(newConfig()))
 	findByToken.GET("", user.FindByToken(&ctx))
 
+	name2id := e.Group("/name/to/id")
+	name2id.GET("", user.NameToUserId(&ctx))
+
 	return e, nil
 }
 

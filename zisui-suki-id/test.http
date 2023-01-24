@@ -21,3 +21,9 @@ Content-Type: application/json
 
 GET http://localhost:3001/find/by/token
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwMUdKMDlFOEJRQ0FCNktZQTA0R0dHUVNISCJ9.7lQrBgjv4_6vUW8BL7upoRZvEUuuYAJXe4eRI2BMT-s
+
+###
+
+GET http://localhost:3001/name/to/id?name=zisui-sukitarou
+accept: application/json
+Content-Type: application/json

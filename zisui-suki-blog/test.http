@@ -25,37 +25,42 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:3002/find/by/id?blogId=01GG5HVAJY1VV84DFFT083EQ8C
+POST http://localhost:3002/register/blog
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwMUdKMDlFOEJRQ0FCNktZQTA0R0dHUVNISCJ9.7lQrBgjv4_6vUW8BL7upoRZvEUuuYAJXe4eRI2BMT-s
+accept: application/json
+Content-Type: application/json
+
+{"blogId": "01GQF1EAH761QS24Y3XB0G8K8T", "userId": "01GJ09E8BQCAB6KYA04GGGQSHH", "content": "# これは何？ \n リュウジがYoutubeで作っていた和風パスタを作ってみた。", "title":"りゅうじの和風パスタ", "abstract": "りゅうじの和風パスタを作ってみた", "evaluation": 6, "status":0, "tags":["パスタ", "和風"]}
+
+
+###
+
+GET http://localhost:3002/find/blog/by/id?blogId=01GG5HVAJY1VV84DFFT083EQ8C
 accept: application/json
 Content-Type: application/json
 
 ###
 
-GET http://localhost:3002/find/by/tag?tagName=パスタ&begin=0&end=1
+GET http://localhost:3002/find/blog/by/tag?tagName=パスタ&begin=0&end=1
+accept: application/json
+Content-Type: application/json
+
+
+###
+
+GET http://localhost:3002/find/blog/by/userName?userName=zisui-sukitarou&begin=0&end=10
 accept: application/json
 Content-Type: application/json
 
 ###
 
-GET http://localhost:3002/find/by/userId?userId=01GJ09E8BQCAB6KYA04GGGQSHH&begin=0&end=10
+GET http://localhost:3002/find/blog/by/tag/userId?tagName=パスタ&userId=01GJ09E8BQCAB6KYA04GGGQSHH&begin=0&end=10
 accept: application/json
 Content-Type: application/json
 
 ###
 
-GET http://localhost:3002/find/by/userName?userName=zisui-sukitarou&begin=0&end=10
-accept: application/json
-Content-Type: application/json
-
-###
-
-GET http://localhost:3002/find/by/tag/userId?tagName=パスタ&userId=01GJ09E8BQCAB6KYA04GGGQSHH&begin=0&end=10
-accept: application/json
-Content-Type: application/json
-
-###
-
-GET http://localhost:3002/find/by/tag/userName?tagName=パスタ&userName=zisui-sukitarou&begin=0&end=10
+GET http://localhost:3002/find/blog/by/tag/userName?tagName=パスタ&userName=zisui-sukitarou&begin=0&end=10
 accept: application/json
 Content-Type: application/json
 

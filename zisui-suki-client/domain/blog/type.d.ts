@@ -7,6 +7,8 @@ type Blog = {
     status: number
     writer: User
     tags: Array<Tag>
+    createdAt: string
+    updatedAt: string
 }
 
 type BlogOverview = {
@@ -17,4 +19,6 @@ type BlogOverview = {
     status: number
     writer: User
     tags: Array<Tag>
+    createdAt: string
+    updatedAt: string
 }

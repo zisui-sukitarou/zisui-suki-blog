@@ -3,6 +3,7 @@ package gateway
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"time"
 	"zisui-suki-blog/domain/model"
@@ -38,6 +39,10 @@ type UserData struct {
 	UpdatedAt   time.Time `json:"updatedAt"`
 }
 
+type UserIdData struct {
+	UserId string `json:"userId"`
+}
+
 /* find by id */
 func (g *UserGateway) FindById(userId model.UserId) (bool, *model.User, error) {
 
@@ -45,7 +50,7 @@ func (g *UserGateway) FindById(userId model.UserId) (bool, *model.User, error) {
 	client := http.Client{}
 	baseUrl := g.domain + "find/by/id"
 	query := "?userId=" + string(userId)
-	req, err := http.NewRequest("GET", baseUrl + query, nil)
+	req, err := http.NewRequest("GET", baseUrl+query, nil)
 	if err != nil {
 		return false, &model.User{}, err
 	}
@@ -90,7 +95,7 @@ func (g *UserGateway) FindByUserName(userName model.UserName) (bool, *model.User
 	client := http.Client{}
 	baseUrl := g.domain + "find/by/name"
 	query := "?name=" + string(userName)
-	req, err := http.NewRequest("GET", baseUrl + query, nil)
+	req, err := http.NewRequest("GET", baseUrl+query, nil)
 	if err != nil {
 		return false, &model.User{}, err
 	}
@@ -126,4 +131,41 @@ func (g *UserGateway) FindByUserName(userName model.UserName) (bool, *model.User
 		user.CreatedAt,
 		user.UpdatedAt,
 	), nil
+}
+
+/* name -> id */
+func (g *UserGateway) NameToId(userName model.UserName) (bool, model.UserId, error) {
+
+	/* do http request -> get response */
+	client := http.Client{}
+	baseUrl := g.domain + "name/to/id"
+	query := "?name=" + string(userName)
+	log.Print(baseUrl+query)
+	req, err := http.NewRequest("GET", baseUrl+query, nil)
+	if err != nil {
+		return false, model.UserId(""), err
+	}
+
+	// req.Header.Add("Authorization", token)
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("accept", "application/json")
+
+	response, err := client.Do(req)
+	if err != nil {
+		return false, model.UserId(""), err
+	}
+	defer response.Body.Close()
+
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return false, model.UserId(""), err
+	}
+
+	/* binding response into user_data */
+	var userId UserIdData
+	if err := json.Unmarshal(body, &userId); err != nil {
+		return false, model.UserId(""), err
+	}
+
+	return true, model.UserId(userId.UserId), nil
 }

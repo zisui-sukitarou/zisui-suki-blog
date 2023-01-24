@@ -8,6 +8,7 @@ import { findDraftById } from "../../../service/nextApi/draft/find/by/id"
 import dynamic from "next/dynamic";
 const SimpleMde = dynamic(() => import("react-simplemde-editor"), { ssr: false });
 import "easymde/dist/easymde.min.css";
+import MDEditor from "@uiw/react-md-editor";
 
 const DraftEditPage: NextPage = () => {
 
@@ -47,7 +48,10 @@ const DraftEditPage: NextPage = () => {
             <h2>概要</h2>
             <textarea value={draft.abstract}></textarea>
             <h2>本文</h2>
-            <SimpleMde value={draft.content} onChange={onChange} />
+            <MDEditor
+                value={"value"}
+            />
+            <MDEditor.Markdown source={draft.content} style={{ whiteSpace: 'pre-wrap' }} />
         </div>
     )
 }

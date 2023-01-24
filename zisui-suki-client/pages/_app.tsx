@@ -1,9 +1,9 @@
 import '../styles/globals.css'
+import "tailwindcss/tailwind.css"
 import type { AppProps } from 'next/app'
 import { RecoilRoot, useSetRecoilState } from 'recoil'
 import { currentUserState } from '../stores/currentUser';
 import { useEffect } from 'react';
-import { useCurrentUser } from '../hooks/useCurrentUser';
 import { fetchCurrentUser } from '../utils/fetchCurrentUser';
 
 

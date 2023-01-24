@@ -39,3 +39,7 @@ type UserDeleteRequest struct {
 	Name        string `json:"name"`
 	RawPassword string `json:"password"`
 }
+
+type UserNameToUserIdRequest struct {
+	Name string `json:"name`
+}

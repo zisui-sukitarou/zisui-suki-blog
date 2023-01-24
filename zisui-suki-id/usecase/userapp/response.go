@@ -82,7 +82,7 @@ func NewUpdateResponse(
 	}
 }
 
-/* */
+/* update password */
 type UpdatePasswordResponse struct {
 	Status   uint          `json:"status"`
 	UserInfo *UserResponse `json:"userInfo"`
@@ -95,5 +95,18 @@ func NewUpdatePasswordResponse(
 	return &UpdatePasswordResponse{
 		Status:   status,
 		UserInfo: NewUserResponse(user),
+	}
+}
+
+/* name -> id */
+type UserNameToUserIdResponse struct {
+	UserId string `json:"userId"`
+}
+
+func NewUserNameToUserIdResponse(
+	userId model.UserId,
+) *UserNameToUserIdResponse {
+	return &UserNameToUserIdResponse{
+		UserId: string(userId),
 	}
 }

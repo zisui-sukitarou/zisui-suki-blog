@@ -7,6 +7,8 @@ type Draft = {
     status: number
     writer: User
     tags: Array<Tag>
+    createdAt: string
+    updatedAt: string
 }
 
 type DraftOverview = {
@@ -17,4 +19,6 @@ type DraftOverview = {
     status: number
     writer: User
     tags: Array<Tag>
+    createdAt: string
+    updatedAt: string
 }

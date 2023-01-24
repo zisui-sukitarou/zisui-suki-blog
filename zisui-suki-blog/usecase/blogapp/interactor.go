@@ -68,13 +68,13 @@ func (b *BlogInteractor) FindByUserName(request *BlogFindByUserNameRequest) erro
 	}
 
 	/* userName -> userId */
-	exists, user, err := b.UserRepo.FindByUserName(userName)
+	exists, userId, err := b.UserRepo.NameToId(userName)
 	if !exists || err != nil {
 		return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
 	}
 
 	/* find by user id */
-	blogs, err := b.BlogRepo.FindByUserId(user.UserId, request.Begin, request.End)
+	blogs, err := b.BlogRepo.FindByUserId(userId, request.Begin, request.End)
 	if err != nil {
 		return b.OutputPort.RespondErorr(apperr.NewErrorResponse(err))
 	}

@@ -1,6 +1,5 @@
-import { json } from "stream/consumers"
-import { blogError } from "../../../../domain/blog/error"
-import { blogApiConfig } from "../../config"
+import { blogError } from "../../../../../domain/blog/error"
+import { blogApiConfig } from "../../../config"
 
 export const findBlogsByUserName = async (userName: string, begin: number, end: number): Promise<{
     error: number,
@@ -8,9 +7,9 @@ export const findBlogsByUserName = async (userName: string, begin: number, end: 
 }> => {
 
     const query = `?userName=${userName}&begin=${begin}&end=${end}`
-    const response = await fetch(blogApiConfig.findBlogByUserName.url + query, {
-        method: blogApiConfig.findBlogByUserName.method,
-        headers: blogApiConfig.findBlogByUserName.headers,
+    const response = await fetch(blogApiConfig.findBlogsByUserName.url + query, {
+        method: blogApiConfig.findBlogsByUserName.method,
+        headers: blogApiConfig.findBlogsByUserName.headers,
     })
 
     /* handle with server error */

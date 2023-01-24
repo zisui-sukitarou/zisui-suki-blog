@@ -1,17 +1,52 @@
-import { NextPage } from "next"
+import { GetServerSideProps, NextPage } from "next"
 import { useRouter } from "next/router"
+import { userError } from "../../../domain/user/errors"
+import { useCurrentUser } from "../../../hooks/useCurrentUser"
+import { findBlogById } from "../../../service/blogApi/blog/find/by/id"
+import Template from "../../../components/templates/user_name/items/blogId"
 
-const BlogPage: NextPage = () => {
-    const router = useRouter()
-    const { user_name, blog_id } = router.query
+type Props = {
+    blog: Blog | null
+}
+
+const UserItemPage = ({ blog }: Props) => {
+
+    const {currentUser} = useCurrentUser()
+    if(!blog) {
+        return <h1>404 NotFound</h1>
+    }
 
     return (
-        <div>
-            <h1>Blog Page</h1>
-            <h2>{user_name}</h2>
-            <h2>{blog_id}</h2>
-        </div>
+        <Template blog={blog} currentUser={currentUser}/>
     )
 }
 
-export default BlogPage
+export default UserItemPage
+
+export const getServerSideProps: GetServerSideProps = async (context): Promise<{props: Props} | {redirect: Redirect}> => {
+    const { blog_id } = context.query
+
+    if (typeof blog_id !== "string") {
+        return {
+            props: {
+                blog: null
+            }
+        } 
+    }
+
+    /* fetch data from zisui-suki-blog-api */
+    const {error, blog} = await findBlogById(blog_id)
+    console.log("blog", blog)
+    if (error !== userError.OK) {
+        return {
+            props: {
+                blog: null
+            }
+        }
+    }
+    return {
+        props: {
+            blog: blog
+        }
+    }
+}
